@@ -6,7 +6,6 @@
 .eggs
 build/
 dist/
-*application.cfg
 .idea/
 *.xml
 /venv/

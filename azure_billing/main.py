@@ -5,6 +5,7 @@ from scrape import data
 
 app = Flask(__name__)
 
+#TODO proper testing should make it unnecessary to have that file
 app.config.from_pyfile(getcwd()+"/application.cfg")
 
 

@@ -37,7 +37,7 @@ def test_token(client, now, enrollment, token):
         match_querystring=True,
         json=sample_data
     )
-
+    #TODO this test should fail
     rsp = client.get('/metrics')
     assert rsp.status_code == 200
 
