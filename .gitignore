@@ -1,0 +1,12 @@
+*egg-info*
+*.pyc
+*~
+.cache
+.coverage
+.eggs
+build/
+dist/
+*application.cfg
+.idea/
+*.xml
+/venv/
