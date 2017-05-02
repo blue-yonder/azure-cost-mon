@@ -5,7 +5,7 @@ from azure_billing.scrape import current_month, convert_json_df, extract_metrics
 from azure_billing.scrape import base_columns, cost_column, get_azure_data, data
 from azure_billing.metrics import Counter
 
-from data import sample_data
+from .data import sample_data
 
 
 def test_month():
@@ -35,8 +35,8 @@ def test_extract_metrics():
 
     assert len(c._records) == 2
 
-    expected_0 = 'costs{DepartmentName="engineering",MeterSubCategory="gateway hour",ResourceGroup="",MeterCategory="virtual network",SubscriptionName="production",MeterName="hours",AccountName="platform"} 0.70\n'
-    expected_1 = 'costs{DepartmentName="engineering",MeterSubCategory="locally redundant",ResourceGroup="my-group",MeterCategory="windows azure storage",SubscriptionName="production",MeterName="standard io - page blob/disk (gb)",AccountName="platform"} 0.00\n'
+    expected_0 = 'costs{AccountName="platform",DepartmentName="engineering",MeterCategory="virtual network",MeterName="hours",MeterSubCategory="gateway hour",ResourceGroup="",SubscriptionName="production"} 0.70\n'
+    expected_1 = 'costs{AccountName="platform",DepartmentName="engineering",MeterCategory="windows azure storage",MeterName="standard io - page blob/disk (gb)",MeterSubCategory="locally redundant",ResourceGroup="my-group",SubscriptionName="production"} 0.00\n'
 
     assert c._records[0] == expected_0
     assert c._records[1] == expected_1

@@ -29,7 +29,7 @@ class Counter(object):
         msg = "%s" % self._name
 
         if params:
-            param_list = [k + '="' + v + '"' for k, v in params.iteritems()]
+            param_list = [k + '="' + v + '"' for k, v in sorted(params.items())]
             msg += '{' + ",".join(param_list) + '}'
 
         msg += " %.2f" % value

@@ -3,7 +3,7 @@ import responses
 import datetime
 
 from azure_billing import app
-from data import sample_data
+from .data import sample_data
 
 
 @pytest.fixture
@@ -54,7 +54,7 @@ def test_metrics(client, now, enrollment):
 
     rsp = client.get('/metrics')
     assert rsp.status_code == 200
-    assert rsp.data.count('azure_costs') == 4
+    assert rsp.data.count(b"azure_costs") == 4
 
 
 @responses.activate
@@ -69,7 +69,7 @@ def test_failing_target(client, now):
     rsp = client.get('/metrics')
 
     assert rsp.status_code == 502
-    assert rsp.data.startswith('Scrape failed')
+    assert rsp.data.startswith(b'Scrape failed')
 
     responses.add(
         method='GET',
@@ -81,11 +81,11 @@ def test_failing_target(client, now):
     rsp = client.get('/metrics')
 
     assert rsp.status_code == 502
-    assert rsp.data.startswith('Scrape failed')
+    assert rsp.data.startswith(b'Scrape failed')
 
 
 
 
 def test_health(client):
     rsp = client.get('/health')
-    assert rsp.data == 'ok'
+    assert rsp.data == b'ok'

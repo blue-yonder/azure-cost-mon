@@ -2,7 +2,7 @@ import requests
 import datetime
 from pandas import DataFrame
 
-from metrics import Counter
+from .metrics import Counter
 
 base_columns = ['DepartmentName', 'AccountName', 'SubscriptionName', 'MeterCategory', 
                 'MeterSubCategory', 'MeterName', 'ResourceGroup']
