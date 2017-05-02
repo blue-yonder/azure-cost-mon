@@ -43,7 +43,7 @@ To run the tests:
 
 ```bash
 mkvirtualenv billing
-pip install -e .
 pip install -r requirements_dev.txt
+pip install -e .
 py.test
 ```
