@@ -8,4 +8,4 @@ build/
 dist/
 .idea/
 *.xml
-/venv/
+/venv*
