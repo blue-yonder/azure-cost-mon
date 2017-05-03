@@ -51,7 +51,7 @@ def test_metrics(client, now, enrollment):
         match_querystring=True,
         json=sample_data
     )
-    metric_name = 'my_costs'
+    metric_name = b'my_costs'
     app.config['METRIC_NAME'] = metric_name
 
     rsp = client.get('/metrics')
