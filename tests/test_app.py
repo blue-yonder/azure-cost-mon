@@ -67,6 +67,11 @@ def test_metrics_name_default_value(client, now, enrollment):
         match_querystring=True,
         json=sample_data
     )
+    #make sure that app.config is empty
+    try:
+        del app.config['METRIC_NAME']
+    except KeyError:
+        pass
 
     rsp = client.get('/metrics')
     assert rsp.status_code == 200
