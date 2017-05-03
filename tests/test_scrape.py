@@ -63,6 +63,7 @@ def test_data():
 
     enrollment='12345'
     token='abc123xyz'
+    metric_name = 'cloud_costs'
 
     responses.add(
         method='GET',
@@ -71,5 +72,5 @@ def test_data():
         json=sample_data
     )
 
-    prom_data = data(enrollment, token, month='2017-03')
-    assert prom_data.count('azure_costs') == 4
+    prom_data = data(enrollment, token, metric_name, month='2017-03')
+    assert prom_data.count(metric_name) == 4
