@@ -22,9 +22,13 @@ You need to create an application.cfg file with the following content:
 
     ENROLLMENT="123456"
     TOKEN="XXX"
+    METRIC_NAME="my_metric_name"
 
-Enrollment is your "enrollment number". The token can be created in the [EA portal](https://ea.azure.com/) to gain 
+- `ENROLLMENT` is your "enrollment number".
+- The `TOKEN` can be created in the [EA portal](https://ea.azure.com/) to gain
 access to the billing API. Navigate to "Reports > Download Usage" and generate an API Access Key.
+- `METRIC_NAME` is the name of the time series that will be used for
+  Prometheus. This configuration is optional and defaults to `azure_costs`
 
 Deployment
 ----------
