@@ -20,7 +20,7 @@ def metrics():
     try:
         metrics = data(app.config['ENROLLMENT'],
                        token=app.config['TOKEN'],
-                       metric_name=app.config.get('METRIC_NAME', b'azure_costs')
+                       metric_name=app.config.get('METRIC_NAME', 'azure_costs')
                        )
     except Exception as e:
         abort(Response('Scrape failed: %s' % e, status=502))
