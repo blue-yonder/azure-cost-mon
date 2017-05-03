@@ -19,7 +19,7 @@ def token():
 @pytest.fixture
 def client():
     app.config['ENROLLMENT'] = enrollment()
-    app.config['TOKEN'] = '123'#token()
+    app.config['TOKEN'] = token()
     return app.test_client()
 
 
