@@ -1,6 +1,6 @@
 from os import getcwd
 from flask import Flask, Response, abort
-from .scrape import data
+from azure_billing.scrape import data
 
 
 app = Flask(__name__)
