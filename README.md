@@ -13,21 +13,21 @@ Description
 It will then return the available metrics in Prometheus compatible format.
 
 The billing API in use is part of the "Enterprise Agreement (EA)" Portal. Hence it has not been tested for pay-as-you-go 
-users but the configuration requires an active EA with Microsoft.
+subscriptions. The configuration requires an active EA with Microsoft.
 
 Configuration
 -------------
 
 You need to create an application.cfg file with the following content:
 
-    ENROLLMENT="123456"
-    TOKEN="XXX"
-    METRIC_NAME="my_metric_name"
+    ENROLLMENT_NUMBER="123456"
+    BILLING_API_ACCESS_KEY="XXX"
+    PROMETHEUS_METRIC_NAME="my_metric_name"
 
-- `ENROLLMENT` is your "enrollment number".
-- The `TOKEN` can be created in the [EA portal](https://ea.azure.com/) to gain
+- `ENROLLMENT_NUMBER` is the unique ID that identifies a particular EA.
+- The `BILLING_API_ACCESS_KEY` can be created in the [EA portal](https://ea.azure.com/) to gain
 access to the billing API. Navigate to "Reports > Download Usage" and generate an API Access Key.
-- `METRIC_NAME` is the name of the time series that will be used for
+- `PROMETHEUS_METRIC_NAME` is the name of the time series that will be generated in
   Prometheus. This configuration is optional and defaults to `azure_costs`
 
 Deployment

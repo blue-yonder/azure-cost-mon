@@ -12,14 +12,14 @@ def enrollment():
 
 
 @pytest.fixture
-def token():
+def access_key():
     return 'abc123xyz'
 
 
 @pytest.fixture
 def client():
-    app.config['ENROLLMENT'] = enrollment()
-    app.config['TOKEN'] = token()
+    app.config['ENROLLMENT_NUMBER'] = enrollment()
+    app.config['BILLING_API_ACCESS_KEY'] = access_key()
     return app.test_client()
 
 
@@ -29,10 +29,10 @@ def now():
 
 
 @responses.activate
-def test_token(client, now, enrollment, token):
+def test_token(client, now, enrollment, access_key):
     responses.add(
         method='GET',
-        adding_headers={"Authorization":"Bearer {}".format(token)},
+        adding_headers={"Authorization":"Bearer {}".format(access_key)},
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
         match_querystring=True,
         json=sample_data
@@ -52,7 +52,7 @@ def test_metrics(client, now, enrollment):
         json=sample_data
     )
     metric_name = b'my_costs'
-    app.config['METRIC_NAME'] = metric_name
+    app.config['PROMETHEUS_METRIC_NAME'] = metric_name
 
     rsp = client.get('/metrics')
     assert rsp.status_code == 200
@@ -69,7 +69,7 @@ def test_metrics_name_default_value(client, now, enrollment):
     )
     #make sure that app.config is empty
     try:
-        del app.config['METRIC_NAME']
+        del app.config['PROMETHEUS_METRIC_NAME']
     except KeyError:
         pass
 

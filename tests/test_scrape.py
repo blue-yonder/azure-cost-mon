@@ -62,7 +62,7 @@ def test_get_azure_data():
 def test_data():
 
     enrollment='12345'
-    token='abc123xyz'
+    access_key='abc123xyz'
     metric_name = 'cloud_costs'
 
     responses.add(
@@ -72,5 +72,5 @@ def test_data():
         json=sample_data
     )
 
-    prom_data = query_metrics(enrollment, token, metric_name, month='2017-03')
+    prom_data = query_metrics(enrollment, access_key, metric_name, month='2017-03')
     assert prom_data.count(metric_name) == 4

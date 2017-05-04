@@ -18,12 +18,14 @@ def health():
 def metrics():
 
     try:
-        metrics = query_metrics(app.config['ENROLLMENT'],
-                                token=app.config['TOKEN'],
-                                metric_name=app.config.get('METRIC_NAME', 'azure_costs')
+        metrics = query_metrics(app.config['ENROLLMENT_NUMBER'],
+                                app.config['BILLING_API_ACCESS_KEY'],
+                                app.config.get('PROMETHEUS_METRIC_NAME', 'azure_costs')
                                 )
     except Exception as e:
-        abort(Response('Scrape failed: %s' % e, status=502))
+        abort(Response("Scrape failed: {}".format(e),
+                       status=502)
+              )
 
     return metrics, 200, {'Content-Type': 'text/plain; charset=utf-8'}
 
