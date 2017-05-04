@@ -63,7 +63,7 @@ def extract_metrics_from_df(df, counter):
         counter.record(value.ExtendedCost, **meta)
 
 
-def data(enrollment, token, metric_name, month=None):
+def query_metrics(enrollment, token, metric_name, month=None):
     """
     Create and return the prometheus compatible output for the billing information
     """

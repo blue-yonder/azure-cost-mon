@@ -1,6 +1,6 @@
 from os import getcwd
 from flask import Flask, Response, abort
-from .scrape import data
+from .scrape import query_metrics
 
 
 app = Flask(__name__)
@@ -18,10 +18,10 @@ def health():
 def metrics():
 
     try:
-        metrics = data(app.config['ENROLLMENT'],
-                       token=app.config['TOKEN'],
-                       metric_name=app.config.get('METRIC_NAME', 'azure_costs')
-                       )
+        metrics = query_metrics(app.config['ENROLLMENT'],
+                                token=app.config['TOKEN'],
+                                metric_name=app.config.get('METRIC_NAME', 'azure_costs')
+                                )
     except Exception as e:
         abort(Response('Scrape failed: %s' % e, status=502))
 

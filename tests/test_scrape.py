@@ -2,7 +2,7 @@ import pytest, responses
 import datetime
 
 from azure_billing.scrape import current_month, convert_json_df, extract_metrics_from_df
-from azure_billing.scrape import base_columns, cost_column, get_azure_data, data
+from azure_billing.scrape import base_columns, cost_column, get_azure_data, query_metrics
 from azure_billing.metrics import Counter
 
 from .data import sample_data
@@ -72,5 +72,5 @@ def test_data():
         json=sample_data
     )
 
-    prom_data = data(enrollment, token, metric_name, month='2017-03')
+    prom_data = query_metrics(enrollment, token, metric_name, month='2017-03')
     assert prom_data.count(metric_name) == 4
