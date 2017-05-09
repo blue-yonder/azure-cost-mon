@@ -7,5 +7,5 @@ Versioning](http://semver.org/).
 0.x
 ---
 
-* Initial version
+- Initial version
 

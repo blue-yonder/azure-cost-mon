@@ -2,7 +2,7 @@ import pytest
 import responses
 import datetime
 
-from azure_billing import app
+from azure_billing.main import create_app
 from .data import sample_data
 
 
@@ -12,15 +12,20 @@ def enrollment():
 
 
 @pytest.fixture
-def token():
+def access_key():
     return 'abc123xyz'
 
+@pytest.fixture
+def app():
+    app = create_app()
+    app.config['ENROLLMENT_NUMBER'] = enrollment()
+    app.config['BILLING_API_ACCESS_KEY'] = access_key()
+    return app
 
 @pytest.fixture
 def client():
-    app.config["ENROLLMENT"] = enrollment()
-    app.config["TOKEN"] = '123'#token()
-    return app.test_client()
+    application = app()
+    return application.test_client()
 
 
 @pytest.fixture
@@ -29,10 +34,10 @@ def now():
 
 
 @responses.activate
-def test_token(client, now, enrollment, token):
+def test_token(client, now, enrollment, access_key):
     responses.add(
         method='GET',
-        adding_headers={"Authorization":"Bearer {}".format(token)},
+        adding_headers={"Authorization":"Bearer {}".format(access_key)},
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
         match_querystring=True,
         json=sample_data
@@ -43,8 +48,25 @@ def test_token(client, now, enrollment, token):
 
 
 @responses.activate
-def test_metrics(client, now, enrollment):
+def test_metrics(app, now, enrollment):
     
+    responses.add(
+        method='GET',
+        url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
+        match_querystring=True,
+        json=sample_data
+    )
+    metric_name = b'my_costs'
+    app.config['PROMETHEUS_METRIC_NAME'] = metric_name
+
+
+    rsp = app.test_client().get('/metrics')
+    assert rsp.status_code == 200
+    assert rsp.data.count(metric_name) == 4
+
+
+@responses.activate
+def test_metrics_name_default_value(client, now, enrollment):
     responses.add(
         method='GET',
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),

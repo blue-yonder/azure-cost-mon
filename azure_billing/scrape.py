@@ -63,7 +63,7 @@ def extract_metrics_from_df(df, counter):
         counter.record(value.ExtendedCost, **meta)
 
 
-def data(enrollment, token, month=None):
+def query_metrics(enrollment, token, metric_name, month=None):
     """
     Create and return the prometheus compatible output for the billing information
     """
@@ -74,7 +74,7 @@ def data(enrollment, token, month=None):
 
     df = convert_json_df(raw)
 
-    c = Counter('azure_costs', "Costs billed to Azure Enterprise Agreement {}".format(enrollment))
+    c = Counter(metric_name, "Costs billed to Azure Enterprise Agreement {}".format(enrollment))
 
     extract_metrics_from_df(df, c)
 
