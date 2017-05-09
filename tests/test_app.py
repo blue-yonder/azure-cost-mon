@@ -2,7 +2,7 @@ import pytest
 import responses
 import datetime
 
-from azure_billing import app
+from azure_billing.main import create_app
 from .data import sample_data
 
 
@@ -15,12 +15,17 @@ def enrollment():
 def access_key():
     return 'abc123xyz'
 
+@pytest.fixture
+def app():
+    app = create_app()
+    app.config['ENROLLMENT_NUMBER'] = enrollment()
+    app.config['BILLING_API_ACCESS_KEY'] = access_key()
+    return app
 
 @pytest.fixture
 def client():
-    app.config['ENROLLMENT_NUMBER'] = enrollment()
-    app.config['BILLING_API_ACCESS_KEY'] = access_key()
-    return app.test_client()
+    application = app()
+    return application.test_client()
 
 
 @pytest.fixture
@@ -43,7 +48,7 @@ def test_token(client, now, enrollment, access_key):
 
 
 @responses.activate
-def test_metrics(client, now, enrollment):
+def test_metrics(app, now, enrollment):
     
     responses.add(
         method='GET',
@@ -54,7 +59,8 @@ def test_metrics(client, now, enrollment):
     metric_name = b'my_costs'
     app.config['PROMETHEUS_METRIC_NAME'] = metric_name
 
-    rsp = client.get('/metrics')
+
+    rsp = app.test_client().get('/metrics')
     assert rsp.status_code == 200
     assert rsp.data.count(metric_name) == 4
 
@@ -67,11 +73,6 @@ def test_metrics_name_default_value(client, now, enrollment):
         match_querystring=True,
         json=sample_data
     )
-    #make sure that app.config is empty
-    try:
-        del app.config['PROMETHEUS_METRIC_NAME']
-    except KeyError:
-        pass
 
     rsp = client.get('/metrics')
     assert rsp.status_code == 200
