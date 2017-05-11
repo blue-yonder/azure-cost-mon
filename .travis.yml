@@ -13,5 +13,14 @@ install:
 - pip install .
 script:
 - py.test
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  server: https://testpypi.python.org/pypi
+  user: manuelbahr
+  password:
+    secure: Qdzd5LEI78vipZnQYgQMQ3rbVGZaJPQSpcPOMRWJAseQ5ekVxbYg/kWUBYPe+7ZzyIeqC5YcgQXHXDUjSQ46q50iPMRj8odWshqZfQlOD3jJrgPinWWHyDwfLoe9fhxMFkgb5QI3oJiK18Pi5ObjDd9t7II22yaNqjBzUIs64TuSERPp5wBZgOjVbCVvxWO8TDUcqhi08aHeyRyExrmVoXkEY8fdvLlpjQB0WtmvPD2xBfjfmwC1/jTHk4bXp/azatCRM/Ahy+CdmM2QrBJmu8Jnry2r1y2rrXmLIK1cedFCwCFT6Wg7ANyOXa8OXYwPztEmhM0cZOdyQ9afwTj2u5oi3JhvGj2xQLTeMaEZZRDnEga/3EExHzDLI3o+RLhoJKzPMX0hb0x3iagIQdHHPS6jQfJ2AV/IPbdqluLbQsZBmCzb5VbTpVdikPcxHXtv8H4i7f9Fmv+M5yfyIfjhUg/eVEIeefC/OWV7gNT+QLlB5SGOpcT0xmEeUABZmtMvh2BvUL5JtW3dsCZYEHK7Krf8dOjb+kOPPo42jxZWW1UhB7qBLEmJrTDL/20OvrgDVqmlU/KJQIlonRgBmBjcBvKmXSaqY6dFA7gCaBUmNhyny1bZtqUDl4M1ZkcCyqaLip2VXEx3a06/VuiKsUsWWbr22U5FNoeOfNBS6gyKtw0=
+  on:
+    tags: false
 after_success:
 - coveralls
