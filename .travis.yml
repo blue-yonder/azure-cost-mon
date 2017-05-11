@@ -1,7 +1,7 @@
 language: python
 python:
-- '2.7.3'
-- '2.7.9'
+- 2.7.3
+- 2.7.9
 - '3.4'
 - '3.5'
 - '3.6'
@@ -16,11 +16,10 @@ script:
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
-  server: https://testpypi.python.org/pypi
   user: manuelbahr
   password:
-    secure: Qdzd5LEI78vipZnQYgQMQ3rbVGZaJPQSpcPOMRWJAseQ5ekVxbYg/kWUBYPe+7ZzyIeqC5YcgQXHXDUjSQ46q50iPMRj8odWshqZfQlOD3jJrgPinWWHyDwfLoe9fhxMFkgb5QI3oJiK18Pi5ObjDd9t7II22yaNqjBzUIs64TuSERPp5wBZgOjVbCVvxWO8TDUcqhi08aHeyRyExrmVoXkEY8fdvLlpjQB0WtmvPD2xBfjfmwC1/jTHk4bXp/azatCRM/Ahy+CdmM2QrBJmu8Jnry2r1y2rrXmLIK1cedFCwCFT6Wg7ANyOXa8OXYwPztEmhM0cZOdyQ9afwTj2u5oi3JhvGj2xQLTeMaEZZRDnEga/3EExHzDLI3o+RLhoJKzPMX0hb0x3iagIQdHHPS6jQfJ2AV/IPbdqluLbQsZBmCzb5VbTpVdikPcxHXtv8H4i7f9Fmv+M5yfyIfjhUg/eVEIeefC/OWV7gNT+QLlB5SGOpcT0xmEeUABZmtMvh2BvUL5JtW3dsCZYEHK7Krf8dOjb+kOPPo42jxZWW1UhB7qBLEmJrTDL/20OvrgDVqmlU/KJQIlonRgBmBjcBvKmXSaqY6dFA7gCaBUmNhyny1bZtqUDl4M1ZkcCyqaLip2VXEx3a06/VuiKsUsWWbr22U5FNoeOfNBS6gyKtw0=
+    secure: rY1avxVKdjowrI6ZOHE8vjJ3u8c0Cud1RUKygkXss21CaZgNvCRdnRSqrdAMvEGsBs7qyFufq50jHNMl4ES7PHgREBynrTmld9KiZm46elgG3vazKzXnkzip3kfNtc8Aer15u0mMKFK2JR4I/T3irtL6USmHmAMhqI+d8dVIFTuJxRYSFEEGLUf60C0s8H9K2//yV4m6iWtGV0xwdGddKpelshezIliYXK+E9gKRUqVf34OhuN/F5sYlsE7JqN5BUzmi7W4dqLQOzSMQRD7kk1vcfTAP0VE1+hUDouBEWlksb7dy9qbpJ4X+X45X+JfL9m9tBCDh8yGPxYdRCMzzjSB6vCfvmGEEbiLFG3DjJ16YJIz63W4GbjwUsIlrzz8oPEOsAMO4LO1XFKU5E6KCnX+/vYm4cwe5tFl4RyZFtYu2zUZRQoVjgEZtXVudNoZXy3BPj8bLgQyscWqUfkq0j+wi+D3ebB7BlSl7TXg16SuGcN9vkoPLgwGsViOKTNCWMiyi+ouT5yeq0rprSr2dt2RRH9lYAVUh/W51Wq0S1Pz3va+RIOvUDbo6d6AR88mngq4TDfONy9P2SeZ9ksFH00vta6Ear32jdO3nI/0N+KOepKc6AyZrGdzX1FXJSwRXMNZr4gcuVgNNvqIs8nEmhD0iMvclzizWL8OJLrHq0UA=
   on:
-    tags: false
+    tags: true
 after_success:
 - coveralls
