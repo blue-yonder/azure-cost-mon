@@ -39,22 +39,19 @@ def now():
 @responses.activate
 def test_token(client, now, enrollment, access_key):
 
-    def request_callback(request):
-        token = request.headers['Authorization']
-        if token == "Bearer {}".format(access_key):
-            return 200, dict(), dumps(sample_data)
-        else:
-            return 401, dict(), 'wrong token'
-
-    responses.add_callback(
+    responses.add(
         method='GET',
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
         match_querystring=True,
-        callback=request_callback,
+        json=sample_data
     )
 
     rsp = client.get('/metrics')
     assert rsp.status_code == 200
+
+    assert client.get('/metrics').status_code == 200
+    assert responses.calls[-1].request.headers['Authorization'] == "Bearer {}".format(access_key)
+
 
 
 @responses.activate
