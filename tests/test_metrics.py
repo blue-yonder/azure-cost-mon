@@ -1,6 +1,6 @@
 import pytest
 import textwrap
-from azure_billing.metrics import Counter
+from azure_costs_exporter.metrics import Counter
 
 
 def test_no_name():

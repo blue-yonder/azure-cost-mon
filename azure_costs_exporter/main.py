@@ -3,7 +3,7 @@ from flask import Flask
 
 
 def create_app():
-    from azure_billing.views import bp
+    from azure_costs_exporter.views import bp
 
     app = Flask(__name__)
     app.config.from_pyfile(getcwd()+"/application.cfg")

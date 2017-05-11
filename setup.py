@@ -5,13 +5,13 @@
 from setuptools import setup
 
 setup(
-    name='azure-cost-mon',
-    description='Prometheus scraper for the Azure billing API',
+    name='azure_costs_exporter',
+    description='A Prometheus exporter for the Azure billing API',
     author='Manuel Bähr',
     author_email='manuel.baehr@blue-yonder.com',
     url='https://github.com/blue-yonder/azure-cost-mon',
     use_scm_version=True,
-    packages=['azure_billing'],
+    packages=['azure_costs_exporter'],
     setup_requires=['wheel', 'setuptools_scm'],
     install_requires=['flask', 'requests', 'numpy', 'pandas'],
     classifiers=['Development Status :: 4 - Beta',

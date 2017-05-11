@@ -3,7 +3,7 @@ import responses
 import datetime
 from json import dumps
 
-from azure_billing.main import create_app
+from azure_costs_exporter.main import create_app
 from .data import sample_data
 
 
