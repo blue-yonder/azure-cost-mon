@@ -1,6 +1,7 @@
 import pytest
 import responses
 import datetime
+from json import dumps
 
 from azure_billing.main import create_app
 from .data import sample_data
@@ -15,12 +16,14 @@ def enrollment():
 def access_key():
     return 'abc123xyz'
 
+
 @pytest.fixture
 def app():
     app = create_app()
     app.config['ENROLLMENT_NUMBER'] = enrollment()
     app.config['BILLING_API_ACCESS_KEY'] = access_key()
     return app
+
 
 @pytest.fixture
 def client():
@@ -35,16 +38,20 @@ def now():
 
 @responses.activate
 def test_token(client, now, enrollment, access_key):
+
     responses.add(
         method='GET',
-        adding_headers={"Authorization":"Bearer {}".format(access_key)},
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
         match_querystring=True,
         json=sample_data
     )
-    #TODO this test should fail
+
     rsp = client.get('/metrics')
     assert rsp.status_code == 200
+
+    assert client.get('/metrics').status_code == 200
+    assert responses.calls[-1].request.headers['Authorization'] == "Bearer {}".format(access_key)
+
 
 
 @responses.activate
@@ -104,8 +111,6 @@ def test_failing_target(client, now):
 
     assert rsp.status_code == 502
     assert rsp.data.startswith(b'Scrape failed')
-
-
 
 
 def test_health(client):
