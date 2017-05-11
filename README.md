@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/blue-yonder/azure-cost-mon.svg?branch=master)](https://travis-ci.org/blue-yonder/azure-cost-mon)
 [![Coverage Status](https://coveralls.io/repos/github/blue-yonder/azure-cost-mon/badge.svg?branch=master)](https://coveralls.io/github/blue-yonder/azure-cost-mon?branch=master)
+[![PyPI version](https://badge.fury.io/py/azure-costs-exporter.svg)](https://badge.fury.io/py/azure-costs-exporter)
 
 azure-billing
 =============
@@ -18,7 +19,7 @@ subscriptions. The configuration requires an active EA with Microsoft.
 Configuration
 -------------
 
-You need to create an application.cfg file with the following content:
+You need to create an `application.cfg` file with the following content:
 
     ENROLLMENT_NUMBER="123456"
     BILLING_API_ACCESS_KEY="XXX"
@@ -33,11 +34,11 @@ access to the billing API. Navigate to "Reports > Download Usage" and generate a
 Deployment
 ----------
 
-E.g. via `gunicorn` in a `virtualenv` that contains this package as well as `gunicorn`:
+E.g. via `gunicorn`. In an activated `virtualenv`, you can do:
 
-    gunicorn azure-billing:app
-
-
+    pip install azure-costs-exporter gunicorn
+    cp /path/to/application.cfg .
+    gunicorn azure_costs_exporter:app
 
 Tests
 -----
