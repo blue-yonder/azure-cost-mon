@@ -2,15 +2,15 @@
 [![Coverage Status](https://coveralls.io/repos/github/blue-yonder/azure-cost-mon/badge.svg?branch=master)](https://coveralls.io/github/blue-yonder/azure-cost-mon?branch=master)
 [![PyPI version](https://badge.fury.io/py/azure-costs-exporter.svg)](https://badge.fury.io/py/azure-costs-exporter)
 
-azure-billing
-=============
+ACE azure-costs-exporter
+========================
 
 Prometheus scraper for the Microsoft Azure billing API.
 
 Description
 -----------
 
-**azure-billing** is a web app, that is intended to be called by [Prometheus](https://prometheus.io) to export billing information from Azure. 
+**azure-costs-exporter** is a web app, that is intended to be called by [Prometheus](https://prometheus.io) to export billing information from Azure.
 It will then return the available metrics in Prometheus compatible format.
 
 The billing API in use is part of the "Enterprise Agreement (EA)" Portal. Hence it has not been tested for pay-as-you-go 
