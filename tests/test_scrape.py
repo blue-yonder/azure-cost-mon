@@ -1,9 +1,9 @@
 import pytest, responses
 import datetime
+from prometheus_client import generate_latest, CollectorRegistry
 
 from azure_costs_exporter.scrape import current_month, convert_json_df, extract_metrics_from_df
 from azure_costs_exporter.scrape import base_columns, cost_column, get_azure_data, query_metrics
-from azure_costs_exporter.metrics import Counter
 
 from .data import sample_data
 
@@ -29,17 +29,18 @@ def test_df_missing_column():
 
 
 def test_extract_metrics():
-    c = Counter('costs', 'desc')
     df = convert_json_df(sample_data)
-    extract_metrics_from_df(df, c)
+    registry = CollectorRegistry()
+    extract_metrics_from_df(df, 'costs', '123', registry)
 
-    assert len(c._records) == 2
+    result = generate_latest(registry).decode('utf8').split('\n')
+    assert len(result) == 5
 
-    expected_0 = 'costs{AccountName="platform",DepartmentName="engineering",MeterCategory="virtual network",MeterName="hours",MeterSubCategory="gateway hour",ResourceGroup="",SubscriptionName="production"} 0.70\n'
-    expected_1 = 'costs{AccountName="platform",DepartmentName="engineering",MeterCategory="windows azure storage",MeterName="standard io - page blob/disk (gb)",MeterSubCategory="locally redundant",ResourceGroup="my-group",SubscriptionName="production"} 0.00\n'
+    expected_0 = 'costs{AccountName="platform",DepartmentName="engineering",MeterCategory="virtual network",MeterName="hours",MeterSubCategory="gateway hour",ResourceGroup="",SubscriptionName="production"} 0.71'
+    expected_1 = 'costs{AccountName="platform",DepartmentName="engineering",MeterCategory="windows azure storage",MeterName="standard io - page blob/disk (gb)",MeterSubCategory="locally redundant",ResourceGroup="my-group",SubscriptionName="production"} 0.24'
 
-    assert c._records[0] == expected_0
-    assert c._records[1] == expected_1
+    assert result[2] == expected_0
+    assert result[3] == expected_1
 
 
 @responses.activate
@@ -71,6 +72,9 @@ def test_data():
         match_querystring=True,
         json=sample_data
     )
+    registry = CollectorRegistry()
+    query_metrics(registry, enrollment, access_key, metric_name, month='2017-03')
 
-    prom_data = query_metrics(enrollment, access_key, metric_name, month='2017-03')
-    assert prom_data.count(metric_name) == 4
+    prom_data = generate_latest(registry)
+
+    assert prom_data.decode('utf8').count(metric_name) == 4

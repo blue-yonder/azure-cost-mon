@@ -1,8 +1,8 @@
 import requests
 import datetime
 from pandas import DataFrame
+from prometheus_client.core import CounterMetricFamily
 
-from .metrics import Counter
 
 base_columns = ['DepartmentName', 'AccountName', 'SubscriptionName', 'MeterCategory', 
                 'MeterSubCategory', 'MeterName', 'ResourceGroup']
@@ -53,17 +53,27 @@ def convert_json_df(data):
 
     return df
 
-def extract_metrics_from_df(df, counter):
+def extract_metrics_from_df(df, metric_name, enrollment, registry):
     """
     Fill a counter object with the data from the data frame
     """
     groups = df.groupby(base_columns).sum()
-    for name, value in groups.iterrows():
-        meta = dict(zip(base_columns, name))
-        counter.record(value.ExtendedCost, **meta)
+
+    class AzureCollector(object):
+        def collect(self):
+            c = CounterMetricFamily(metric_name,
+                                    "Costs billed to Azure Enterprise Agreement {}".format(enrollment),
+                                    labels=base_columns)
+
+            for name, value in groups.iterrows():
+                c.add_metric(name, value.ExtendedCost)
+
+            yield c
+
+    registry.register(AzureCollector())
 
 
-def query_metrics(enrollment, token, metric_name, month=None):
+def query_metrics(registry, enrollment, token, metric_name, month=None):
     """
     Create and return the prometheus compatible output for the billing information
     """
@@ -74,8 +84,7 @@ def query_metrics(enrollment, token, metric_name, month=None):
 
     df = convert_json_df(raw)
 
-    c = Counter(metric_name, "Costs billed to Azure Enterprise Agreement {}".format(enrollment))
+    extract_metrics_from_df(df, metric_name, enrollment, registry)
 
-    extract_metrics_from_df(df, c)
 
-    return c.serialize()
+
