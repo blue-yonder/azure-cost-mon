@@ -13,7 +13,7 @@ setup(
     use_scm_version=True,
     packages=['azure_costs_exporter'],
     setup_requires=['wheel', 'setuptools_scm'],
-    install_requires=['flask', 'requests', 'numpy', 'pandas'],
+    install_requires=['flask', 'requests', 'numpy', 'pandas', 'prometheus_client'],
     classifiers=['Development Status :: 4 - Beta',
                  'Intended Audience :: Developers',
                  'Intended Audience :: System Administrators',
