@@ -29,7 +29,7 @@ You need to create an `application.cfg` file with the following content:
 - The `BILLING_API_ACCESS_KEY` can be created in the [EA portal](https://ea.azure.com/) to gain
 access to the billing API. Navigate to "Reports > Download Usage" and generate an API Access Key.
 - `PROMETHEUS_METRIC_NAME` is the name of the time series that will be generated in
-  Prometheus. This configuration is optional and defaults to `azure_costs`
+  Prometheus.
 
 Deployment
 ----------

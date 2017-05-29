@@ -5,15 +5,16 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 -e .
-click==6.6                # via flask
-flask==0.11.1
+click==6.7                # via flask
+flask==0.12.2
 itsdangerous==0.24        # via flask
-jinja2==2.8               # via flask
-markupsafe==0.23          # via jinja2
-numpy==1.12.0             # via pandas
-pandas==0.19.2
+jinja2==2.9.6             # via flask
+markupsafe==1.0           # via jinja2
+numpy==1.12.1             # via pandas
+pandas==0.20.1
+prometheus-client==0.0.19
 python-dateutil==2.6.0    # via pandas
-pytz==2016.10             # via pandas
-requests==2.11.1
+pytz==2017.2              # via pandas
+requests==2.14.2
 six==1.10.0               # via python-dateutil
-werkzeug==0.11.10         # via flask
+werkzeug==0.12.2          # via flask
