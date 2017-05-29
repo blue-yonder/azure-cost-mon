@@ -1,7 +1,7 @@
 from os import getcwd
 from flask import Flask
 from prometheus_client import REGISTRY
-from .prometheus_collector import AzureEABillingCollector
+from azure_costs_exporter.prometheus_collector import AzureEABillingCollector
 
 
 def create_app():
