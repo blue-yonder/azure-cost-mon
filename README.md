@@ -5,15 +5,14 @@
 ACE azure-costs-exporter
 ========================
 
-Prometheus scraper for the Microsoft Azure billing API.
+Prometheus exporter for the Microsoft Azure billing API.
 
 Description
 -----------
 
-**azure-costs-exporter** is a web app, that is intended to be called by [Prometheus](https://prometheus.io) to export billing information from Azure.
-It will then return the available metrics in Prometheus compatible format.
+**azure-costs-exporter** is a web app, that is intended to be called by [Prometheus](https://prometheus.io) to export billing information from Azure. It will then return the available metrics in Prometheus compatible format.
 
-The billing API in use is part of the "Enterprise Agreement (EA)" Portal. Hence it has not been tested for pay-as-you-go 
+The billing API in use is part of the "Enterprise Agreement (EA)" Portal. Hence, it is not available for pay-as-you-go 
 subscriptions. The configuration requires an active EA with Microsoft.
 
 Configuration
@@ -28,8 +27,7 @@ You need to create an `application.cfg` file with the following content:
 - `ENROLLMENT_NUMBER` is the unique ID that identifies a particular EA.
 - The `BILLING_API_ACCESS_KEY` can be created in the [EA portal](https://ea.azure.com/) to gain
 access to the billing API. Navigate to "Reports > Download Usage" and generate an API Access Key.
-- `PROMETHEUS_METRIC_NAME` is the name of the time series that will be generated in
-  Prometheus.
+- `PROMETHEUS_METRIC_NAME` is the name of the time series that will be generated in Prometheus.
 
 Deployment
 ----------
