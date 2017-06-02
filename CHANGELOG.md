@@ -4,6 +4,12 @@ Change Log
 All notable changes to this project are noted in this file. This project adheres to [Semantic
 Versioning](http://semver.org/).
 
+0.3.1
+-----
+
+- Fixed the exporter to cope with the non-standard response for months
+  without usage details.
+
 
 0.3.0
 -----
