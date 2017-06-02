@@ -1,5 +1,4 @@
--r requirements.in
+-r requirements.txt
 pytest
 pytest-cov
 responses
-pip-tools
