@@ -59,17 +59,20 @@ def test_extract_metrics():
 @responses.activate
 def test_get_azure_data():
 
-    enrollment='12345'
+    enrollment = '123'
+    base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment)
+    params = "?month={}&type=detail&fmt=Json".format(current_month())
+
     c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz')
 
     responses.add(
         method='GET',
-        url="https://ea.azure.com/rest/{}/usage-report?month=2017-03&type=detail&fmt=Json".format(enrollment),
+        url=base_url+params,
         match_querystring=True,
         json=sample_data
     )
 
-    data = c._get_azure_data('2017-03')
+    data = c._get_azure_data(current_month())
     assert data == sample_data
 
 
@@ -78,21 +81,23 @@ def test_empty_month():
     """
     If no usage details have are available for a given month the API does not return a JSON document.    
     """
-    enrollment='12345'
+    enrollment = '123'
+    base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment)
+    params = "?month={}&type=detail&fmt=Json".format(current_month())
+
     c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz')
 
-    empty_month_data = """
-""Usage Data Extract",
+    empty_month_data = """"Usage Data Extract",
 "",
 "AccountOwnerId","Account Name","ServiceAdministratorId","SubscriptionId","SubscriptionGuid","Subscription Name","Date","Month","Day","Year","Product","Meter ID","Meter Category","Meter Sub-Category","Meter Region","Meter Name","Consumed Quantity","ResourceRate","ExtendedCost","Resource Location","Consumed Service","Instance ID","ServiceInfo1","ServiceInfo2","AdditionalInfo","Tags","Store Service Identifier","Department Name","Cost Center","Unit Of Measure","Resource Group",'
 """
 
     responses.add(
         method='GET',
-        url="https://ea.azure.com/rest/{}/usage-report?month=2017-03&type=detail&fmt=Json".format(enrollment),
+        url=base_url+params,
         match_querystring=True,
         body=empty_month_data
     )
 
-    data = c._get_azure_data('2017-03')
-    assert data == sample_data
+    data = c._get_azure_data(current_month())
+    assert data == {}
