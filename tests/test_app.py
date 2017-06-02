@@ -62,6 +62,27 @@ def test_metrics(app, now, enrollment):
 
 
 @responses.activate
+def test_metrics_no_usage(app, now, enrollment):
+    empty_month_data = """"Usage Data Extract",
+    "",
+    "AccountOwnerId","Account Name","ServiceAdministratorId","SubscriptionId","SubscriptionGuid","Subscription Name","Date","Month","Day","Year","Product","Meter ID","Meter Category","Meter Sub-Category","Meter Region","Meter Name","Consumed Quantity","ResourceRate","ExtendedCost","Resource Location","Consumed Service","Instance ID","ServiceInfo1","ServiceInfo2","AdditionalInfo","Tags","Store Service Identifier","Department Name","Cost Center","Unit Of Measure","Resource Group",'
+    """
+
+    responses.add(
+        method='GET',
+        url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
+        match_querystring=True,
+        body=empty_month_data
+    )
+
+    rsp = app.test_client().get('/metrics')
+    assert rsp.status_code == 200
+
+    # expect only metric definition and help but no content in the output
+    assert rsp.data.count(b'azure_costs_eur') == 2
+
+
+@responses.activate
 def test_failing_target(client, now):
     responses.add(
         method='GET',
