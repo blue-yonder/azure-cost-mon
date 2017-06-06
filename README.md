@@ -5,7 +5,9 @@
 ACE azure-costs-exporter
 ========================
 
-Prometheus exporter for the Microsoft Azure billing API.
+Prometheus exporter for the Microsoft Azure billing API. Check out
+[this blog post](https://tech.blue-yonder.com/public-cloud-cost-control/) for
+more background about the idea and some nice screenshots.
 
 Description
 -----------
