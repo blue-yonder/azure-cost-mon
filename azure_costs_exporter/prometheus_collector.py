@@ -1,5 +1,6 @@
 import requests
 import datetime
+from flask import request
 from pandas import DataFrame
 from prometheus_client.core import CounterMetricFamily, Metric
 
@@ -65,9 +66,15 @@ class AzureEABillingCollector(object):
         url = "https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(self._enrollment,
                                                                                                  month)
 
-        rsp = requests.get(url, headers=headers, timeout=10)
-        rsp.raise_for_status()
+        try:
+            timeout = int(float(request.headers.get('Scrape-Timeout-Seconds', 10)))
+        except (RuntimeError, ValueError) as e:
+            # The RuntimeError is raised when we are not in a flask request
+            # context, for example when running the unit tests for the collector
+            timeout = 10
 
+        rsp = requests.get(url, headers=headers, timeout=timeout)
+        rsp.raise_for_status()
         return rsp.json()
 
     def _create_counter(self):
