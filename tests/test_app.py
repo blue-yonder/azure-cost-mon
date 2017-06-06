@@ -1,7 +1,9 @@
-import pytest
-import responses
 import datetime
 
+import pytest
+import responses
+
+import azure_costs_exporter
 from azure_costs_exporter.main import create_app
 from .data import sample_data, api_output_for_empty_months
 
@@ -80,24 +82,32 @@ def test_metrics_no_usage(app, now, enrollment):
 
 
 @responses.activate
-def test_failing_target(client, now):
-    responses.add(
-        method='GET',
-        url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
-        match_querystring=True,
-        status=500
+def test_metrics_timeout(monkeypatch, app, access_key, now, enrollment):
+    get_mock = MagicMock()
+    monkeypatch.setattr(azure_costs_exporter.prometheus_collector.requests,
+                        'get',
+                        get_mock)
+
+    rsp = app.test_client().get('/metrics', headers={'Scrape-Timeout-Seconds': 42.0})
+    url = 'https://ea.azure.com/rest/{enrollment}/usage-report?month={month}&type=detail&fmt=Json'
+    url = url.format(enrollment=enrollment, month=now)
+
+    get_mock.assert_called_once_with(
+        url,
+        headers={'Authorization': 'Bearer {}'.format(access_key)},
+        timeout=42
     )
+    assert rsp.status_code == 200
 
-    rsp = client.get('/metrics')
 
-    assert rsp.status_code == 502
-    assert rsp.data.startswith(b'Scrape failed')
-
+@responses.activate
+@pytest.mark.parametrize('status', [500, 400])
+def test_failing_target(client, now, status):
     responses.add(
         method='GET',
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
         match_querystring=True,
-        status=400
+        status=status
     )
 
     rsp = client.get('/metrics')
