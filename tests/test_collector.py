@@ -100,4 +100,4 @@ def test_empty_month():
     )
 
     data = c._get_azure_data(current_month())
-    assert data == {}
+    assert data == dict()
