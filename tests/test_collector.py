@@ -43,7 +43,7 @@ def test_extract_metrics():
     )
 
     registry = CollectorRegistry()
-    c = AzureEABillingCollector('costs', enrollment, 'ab123xy')
+    c = AzureEABillingCollector('costs', enrollment, 'ab123xy', 10)
     registry.register(c)
 
     result = generate_latest(registry).decode('utf8').split('\n')
@@ -59,20 +59,17 @@ def test_extract_metrics():
 @responses.activate
 def test_get_azure_data():
 
-    enrollment = '123'
-    base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment)
-    params = "?month={}&type=detail&fmt=Json".format(current_month())
-
-    c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz')
+    enrollment='12345'
+    c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz', 42.3)
 
     responses.add(
         method='GET',
-        url=base_url+params,
+        url="https://ea.azure.com/rest/{}/usage-report?month=2017-03&type=detail&fmt=Json".format(enrollment),
         match_querystring=True,
         json=sample_data
     )
 
-    data = c._get_azure_data(current_month())
+    data = c._get_azure_data('2017-03')
     assert data == sample_data
 
 
@@ -85,7 +82,7 @@ def test_empty_month():
     base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment)
     params = "?month={}&type=detail&fmt=Json".format(current_month())
 
-    c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz')
+    c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz', 11)
 
     responses.add(
         method='GET',

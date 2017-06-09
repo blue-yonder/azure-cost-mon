@@ -4,6 +4,11 @@ Change Log
 All notable changes to this project are noted in this file. This project adheres to [Semantic
 Versioning](http://semver.org/).
 
+Next Version
+------------
+
+- Use `X-Prometheus-Scrape-Timeout-Seconds` when querying the billing API
+
 0.3.1
 -----
 
