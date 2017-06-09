@@ -3,7 +3,6 @@ import datetime
 import pytest
 import responses
 
-import azure_costs_exporter
 from azure_costs_exporter.main import create_app
 from azure_costs_exporter.views import DEFAULT_SCRAPE_TIMEOUT
 from .data import sample_data, api_output_for_empty_months
@@ -45,8 +44,7 @@ def test_token(client, now, enrollment, access_key):
         json=sample_data
     )
 
-    rv = client.get('/metrics')
-    assert rv.status_code == 200
+    assert client.get('/metrics').status_code == 200
     assert responses.calls[-1].request.headers['Authorization'] == "Bearer {}".format(access_key)
 
 
