@@ -3,7 +3,7 @@ import responses
 import datetime
 
 from azure_costs_exporter.main import create_app
-from .data import sample_data
+from .data import sample_data, api_output_for_empty_months
 
 
 @pytest.fixture
@@ -63,16 +63,13 @@ def test_metrics(app, now, enrollment):
 
 @responses.activate
 def test_metrics_no_usage(app, now, enrollment):
-    empty_month_data = """"Usage Data Extract",
-    "",
-    "AccountOwnerId","Account Name","ServiceAdministratorId","SubscriptionId","SubscriptionGuid","Subscription Name","Date","Month","Day","Year","Product","Meter ID","Meter Category","Meter Sub-Category","Meter Region","Meter Name","Consumed Quantity","ResourceRate","ExtendedCost","Resource Location","Consumed Service","Instance ID","ServiceInfo1","ServiceInfo2","AdditionalInfo","Tags","Store Service Identifier","Department Name","Cost Center","Unit Of Measure","Resource Group",'
-    """
+
 
     responses.add(
         method='GET',
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
         match_querystring=True,
-        body=empty_month_data
+        body=api_output_for_empty_months
     )
 
     rsp = app.test_client().get('/metrics')

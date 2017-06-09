@@ -1,3 +1,7 @@
+api_output_for_empty_months = """"Usage Data Extract",
+    "",
+    "AccountOwnerId","Account Name","ServiceAdministratorId","SubscriptionId","SubscriptionGuid","Subscription Name","Date","Month","Day","Year","Product","Meter ID","Meter Category","Meter Sub-Category","Meter Region","Meter Name","Consumed Quantity","ResourceRate","ExtendedCost","Resource Location","Consumed Service","Instance ID","ServiceInfo1","ServiceInfo2","AdditionalInfo","Tags","Store Service Identifier","Department Name","Cost Center","Unit Of Measure","Resource Group",'
+    """
 sample_data = [{u'AccountName': u'Platform',
   u'AccountOwnerId': u'donald.duck',
   u'AdditionalInfo': u'',

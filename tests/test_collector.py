@@ -5,7 +5,7 @@ from prometheus_client import generate_latest, CollectorRegistry
 from azure_costs_exporter.prometheus_collector import convert_json_df, AzureEABillingCollector
 from azure_costs_exporter.prometheus_collector import base_columns, cost_column
 
-from .data import sample_data
+from .data import sample_data, api_output_for_empty_months
 
 
 def current_month():
@@ -87,16 +87,11 @@ def test_empty_month():
 
     c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz')
 
-    empty_month_data = """"Usage Data Extract",
-"",
-"AccountOwnerId","Account Name","ServiceAdministratorId","SubscriptionId","SubscriptionGuid","Subscription Name","Date","Month","Day","Year","Product","Meter ID","Meter Category","Meter Sub-Category","Meter Region","Meter Name","Consumed Quantity","ResourceRate","ExtendedCost","Resource Location","Consumed Service","Instance ID","ServiceInfo1","ServiceInfo2","AdditionalInfo","Tags","Store Service Identifier","Department Name","Cost Center","Unit Of Measure","Resource Group",'
-"""
-
     responses.add(
         method='GET',
         url=base_url+params,
         match_querystring=True,
-        body=empty_month_data
+        body=api_output_for_empty_months
     )
 
     data = c._get_azure_data(current_month())
