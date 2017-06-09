@@ -5,7 +5,7 @@ from prometheus_client import generate_latest, CollectorRegistry
 from azure_costs_exporter.prometheus_collector import convert_json_df, AzureEABillingCollector
 from azure_costs_exporter.prometheus_collector import base_columns, cost_column
 
-from .data import sample_data
+from .data import sample_data, api_output_for_empty_months
 
 
 def current_month():
@@ -59,15 +59,40 @@ def test_extract_metrics():
 @responses.activate
 def test_get_azure_data():
 
-    enrollment='12345'
+    enrollment = '123'
+    base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment)
+    params = "?month={}&type=detail&fmt=Json".format(current_month())
+
     c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz')
 
     responses.add(
         method='GET',
-        url="https://ea.azure.com/rest/{}/usage-report?month=2017-03&type=detail&fmt=Json".format(enrollment),
+        url=base_url+params,
         match_querystring=True,
         json=sample_data
     )
 
-    data = c._get_azure_data('2017-03')
+    data = c._get_azure_data(current_month())
     assert data == sample_data
+
+
+@responses.activate
+def test_empty_month():
+    """
+    If no usage details have are available for a given month the API does not return a JSON document.    
+    """
+    enrollment = '123'
+    base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment)
+    params = "?month={}&type=detail&fmt=Json".format(current_month())
+
+    c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz')
+
+    responses.add(
+        method='GET',
+        url=base_url+params,
+        match_querystring=True,
+        body=api_output_for_empty_months
+    )
+
+    data = c._get_azure_data(current_month())
+    assert data == dict()

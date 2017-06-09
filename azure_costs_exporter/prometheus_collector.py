@@ -68,6 +68,10 @@ class AzureEABillingCollector(object):
         rsp = requests.get(url, headers=headers, timeout=10)
         rsp.raise_for_status()
 
+        if rsp.text.startswith('"Usage Data Extract"'):
+            # special treatement for no usage details. Azure API doesn't return a JSON document in that case...
+            return dict()
+
         return rsp.json()
 
     def _create_counter(self):

@@ -3,7 +3,7 @@ import responses
 import datetime
 
 from azure_costs_exporter.main import create_app
-from .data import sample_data
+from .data import sample_data, api_output_for_empty_months
 
 
 @pytest.fixture
@@ -59,6 +59,24 @@ def test_metrics(app, now, enrollment):
     rsp = app.test_client().get('/metrics')
     assert rsp.status_code == 200
     assert rsp.data.count(b'azure_costs_eur') == 4
+
+
+@responses.activate
+def test_metrics_no_usage(app, now, enrollment):
+
+
+    responses.add(
+        method='GET',
+        url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
+        match_querystring=True,
+        body=api_output_for_empty_months
+    )
+
+    rsp = app.test_client().get('/metrics')
+    assert rsp.status_code == 200
+
+    # expect only metric definition and help but no content in the output
+    assert rsp.data.count(b'azure_costs_eur') == 2
 
 
 @responses.activate
