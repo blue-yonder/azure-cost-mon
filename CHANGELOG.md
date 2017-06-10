@@ -4,17 +4,17 @@ Change Log
 All notable changes to this project are noted in this file. This project adheres to [Semantic
 Versioning](http://semver.org/).
 
-Next Version
-------------
+0.4.0
+-----
 
-- Use `X-Prometheus-Scrape-Timeout-Seconds` when querying the billing API
+- Use the `X-Prometheus-Scrape-Timeout-Seconds` header sent by
+  prometheus to overwrite the internal request timeout default.
 
 0.3.1
 -----
 
 - Fixed the exporter to cope with the non-standard response for months
   without usage details.
-
 
 0.3.0
 -----
