@@ -13,6 +13,18 @@ def current_month():
      return now.strftime("%Y-%m")
 
 
+@pytest.fixture()
+def enrollment():
+    return '1234567'
+
+
+@pytest.fixture()
+def api_url():
+    base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment())
+    params = "?month={}&type=detail&fmt=Json".format(current_month())
+    return base_url + params
+
+
 def test_df_conversion():
     df = convert_json_df(sample_data)
 
@@ -29,15 +41,11 @@ def test_df_missing_column():
 
 
 @responses.activate
-def test_extract_metrics():
-
-    enrollment = '123'
-    base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment)
-    params = "?month={}&type=detail&fmt=Json".format(current_month())
+def test_extract_metrics(api_url, enrollment):
 
     responses.add(
         method='GET',
-        url=base_url+params,
+        url=api_url,
         match_querystring=True,
         json=sample_data
     )
@@ -57,36 +65,31 @@ def test_extract_metrics():
 
 
 @responses.activate
-def test_get_azure_data():
+def test_get_azure_data(api_url, enrollment):
 
-    enrollment='12345'
     c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz', 42.3)
 
     responses.add(
         method='GET',
-        url="https://ea.azure.com/rest/{}/usage-report?month=2017-03&type=detail&fmt=Json".format(enrollment),
+        url=api_url,
         match_querystring=True,
         json=sample_data
     )
 
-    data = c._get_azure_data('2017-03')
+    data = c._get_azure_data(current_month())
     assert data == sample_data
 
 
 @responses.activate
-def test_empty_month():
+def test_empty_month(api_url, enrollment):
     """
     If no usage details have are available for a given month the API does not return a JSON document.    
     """
-    enrollment = '123'
-    base_url = "https://ea.azure.com/rest/{}/usage-report".format(enrollment)
-    params = "?month={}&type=detail&fmt=Json".format(current_month())
-
     c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz', 11)
 
     responses.add(
         method='GET',
-        url=base_url+params,
+        url=api_url,
         match_querystring=True,
         body=api_output_for_empty_months
     )
