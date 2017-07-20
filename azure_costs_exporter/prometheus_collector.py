@@ -104,6 +104,6 @@ class AzureEABillingCollector(object):
         groups = df.groupby(base_columns).sum()
 
         for name, value in groups.iterrows():
-            c.add_metric(name, value.ExtendedCost)
+            c.add_metric(name, int(round(value.ExtendedCost)))
 
         yield c
