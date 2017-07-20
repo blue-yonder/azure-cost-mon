@@ -1,7 +1,7 @@
 import requests
 import datetime
 from pandas import DataFrame
-from prometheus_client.core import CounterMetricFamily, Metric
+from prometheus_client.core import CounterMetricFamily
 
 base_columns = ['DepartmentName', 'AccountName', 'SubscriptionName', 'MeterCategory',
                 'MeterSubCategory', 'MeterName', 'ResourceGroup']
@@ -38,17 +38,19 @@ class AzureEABillingCollector(object):
     in Prometheus compatible format.
     """
 
-    def __init__(self, metric_name, enrollment, token):
+    def __init__(self, metric_name, enrollment, token, timeout):
         """
         Constructor.
         
         :param metric_name: Name of the timeseries
         :param enrollment: ID of the enterprise agreement (EA)
         :param token: Access Key generated via the EA portal
+        :param timeout: Timeout to use for the request against the EA portal
         """
         self._metric_name = metric_name
         self._enrollment = enrollment
         self._token = token
+        self._timeout = timeout
 
     def _get_azure_data(self, month=None):
         """
@@ -65,7 +67,7 @@ class AzureEABillingCollector(object):
         url = "https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(self._enrollment,
                                                                                                  month)
 
-        rsp = requests.get(url, headers=headers, timeout=10)
+        rsp = requests.get(url, headers=headers, timeout=self._timeout)
         rsp.raise_for_status()
 
         if rsp.text.startswith('"Usage Data Extract"'):

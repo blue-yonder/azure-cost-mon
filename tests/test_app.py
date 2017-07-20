@@ -1,8 +1,10 @@
-import pytest
-import responses
 import datetime
 
+import pytest
+import responses
+
 from azure_costs_exporter.main import create_app
+from azure_costs_exporter.views import DEFAULT_SCRAPE_TIMEOUT
 from .data import sample_data, api_output_for_empty_months
 
 
@@ -46,19 +48,30 @@ def test_token(client, now, enrollment, access_key):
     assert responses.calls[-1].request.headers['Authorization'] == "Bearer {}".format(access_key)
 
 
-@responses.activate
-def test_metrics(app, now, enrollment):
-    
-    responses.add(
-        method='GET',
-        url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
-        match_querystring=True,
-        json=sample_data
-    )
+@pytest.mark.parametrize('timeout,expected', [('42.3', 42.3), (None, DEFAULT_SCRAPE_TIMEOUT)])
+def test_metrics(app, access_key, now, enrollment, timeout, expected):
+    class RequestsMock(responses.RequestsMock):
+        def get(self, *args, **kwargs):
+            assert kwargs['timeout'] == expected
+            return super(RequestsMock, self).get(*args, **kwargs)
 
-    rsp = app.test_client().get('/metrics')
-    assert rsp.status_code == 200
-    assert rsp.data.count(b'azure_costs_eur') == 4
+    with RequestsMock() as resp:
+        resp.add(
+            method='GET',
+            url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
+            match_querystring=True,
+            json=sample_data
+        )
+
+        headers = {}
+        if timeout is not None:
+            headers = {'X-Prometheus-Scrape-Timeout-Seconds': timeout}
+
+        rsp = app.test_client().get('/metrics', headers=headers)
+        url = 'https://ea.azure.com/rest/{enrollment}/usage-report?month={month}&type=detail&fmt=Json'
+        url = url.format(enrollment=enrollment, month=now)
+        assert rsp.status_code == 200
+        assert rsp.data.count(b'azure_costs_eur') == 4
 
 
 @responses.activate
@@ -80,24 +93,13 @@ def test_metrics_no_usage(app, now, enrollment):
 
 
 @responses.activate
-def test_failing_target(client, now):
+@pytest.mark.parametrize('status', [500, 400])
+def test_failing_target(client, now, status):
     responses.add(
         method='GET',
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
         match_querystring=True,
-        status=500
-    )
-
-    rsp = client.get('/metrics')
-
-    assert rsp.status_code == 502
-    assert rsp.data.startswith(b'Scrape failed')
-
-    responses.add(
-        method='GET',
-        url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
-        match_querystring=True,
-        status=400
+        status=status
     )
 
     rsp = client.get('/metrics')

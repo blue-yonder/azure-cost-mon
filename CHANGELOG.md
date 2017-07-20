@@ -4,7 +4,7 @@ Change Log
 All notable changes to this project are noted in this file. This project adheres to [Semantic
 Versioning](http://semver.org/).
 
-0.3.2
+0.4.1
 -----
 
 - Fixed issue (https://github.com/blue-yonder/azure-cost-mon/issues/12)
@@ -12,6 +12,14 @@ Versioning](http://semver.org/).
   emitting only integer values. The instability resulted in more counter
   resets within Prometheus than necessary, so that `increase` gave wrong
   results!
+
+
+0.4.0
+-----
+
+- Use the `X-Prometheus-Scrape-Timeout-Seconds` header sent by
+  prometheus to overwrite the internal request timeout default.
+
 
 0.3.1
 -----
