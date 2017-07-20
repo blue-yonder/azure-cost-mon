@@ -4,6 +4,15 @@ Change Log
 All notable changes to this project are noted in this file. This project adheres to [Semantic
 Versioning](http://semver.org/).
 
+0.3.2
+-----
+
+- Fixed issue (https://github.com/blue-yonder/azure-cost-mon/issues/12)
+  where the sum of multiple time series was numerically instable by
+  emitting only integer values. The instability resulted in more counter
+  resets within Prometheus than necessary, so that `increase` gave wrong
+  results!
+
 0.3.1
 -----
 
