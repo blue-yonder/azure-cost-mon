@@ -2,8 +2,8 @@ import pytest, responses
 import datetime
 from prometheus_client import generate_latest, CollectorRegistry
 
-from azure_costs_exporter.prometheus_collector import convert_json_df, AzureEABillingCollector
-from azure_costs_exporter.prometheus_collector import base_columns, cost_column
+from azure_costs_exporter.enterprise_billing_collector import convert_json_df, AzureEABillingCollector
+from azure_costs_exporter.enterprise_billing_collector import base_columns, cost_column
 
 from .data import sample_data, api_output_for_empty_months
 

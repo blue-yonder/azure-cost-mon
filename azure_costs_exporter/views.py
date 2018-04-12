@@ -1,7 +1,7 @@
 from flask import Blueprint, Response, abort, current_app, request
 from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, generate_latest
 
-from .prometheus_collector import AzureEABillingCollector
+from .enterprise_billing_collector import AzureEABillingCollector
 
 
 bp = Blueprint('views', __name__)
