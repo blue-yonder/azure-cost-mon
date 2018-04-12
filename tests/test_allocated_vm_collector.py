@@ -3,7 +3,7 @@ import responses
 
 from prometheus_client import generate_latest, CollectorRegistry
 
-from azure_costs_exporter.vm_collector import AzureVMCollector
+from azure_costs_exporter.allocated_vm_collector import AzureAllocatedVMCollector
 
 
 @pytest.fixture()
@@ -33,7 +33,7 @@ def test_single_machine(enable_login):
                   ]})
 
     registry = CollectorRegistry()
-    c = AzureVMCollector('app_id', 'app_secret', 'tenant_id', ['SUBSCRIPTION_ID'], 'SERIES_NAME')
+    c = AzureAllocatedVMCollector('app_id', 'app_secret', 'tenant_id', ['SUBSCRIPTION_ID'], 'SERIES_NAME')
     registry.register(c)
 
     result = generate_latest(registry).decode('utf8').split('\n')
@@ -64,7 +64,7 @@ def test_multiple_machines_in_multiple_subscriptions(enable_login):
                   ]})
 
     registry = CollectorRegistry()
-    c = AzureVMCollector('app_id', 'app_secret', 'tenant_id', ['SUBSCRIPTION_A', 'SUBSCRIPTION_B'], 'SERIES_NAME')
+    c = AzureAllocatedVMCollector('app_id', 'app_secret', 'tenant_id', ['SUBSCRIPTION_A', 'SUBSCRIPTION_B'], 'SERIES_NAME')
     registry.register(c)
 
     result = generate_latest(registry).decode('utf8').split('\n')
@@ -106,7 +106,7 @@ def test_multiple_machines_in_single_subscription(enable_login):
                   ]})
 
     registry = CollectorRegistry()
-    c = AzureVMCollector('app_id', 'app_secret', 'tenant_id', ['SUBSCRIPTION_A'], 'SERIES_NAME')
+    c = AzureAllocatedVMCollector('app_id', 'app_secret', 'tenant_id', ['SUBSCRIPTION_A'], 'SERIES_NAME')
     registry.register(c)
 
     result = generate_latest(registry).decode('utf8').split('\n')

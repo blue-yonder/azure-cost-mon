@@ -4,7 +4,6 @@ from pandas import DataFrame
 
 from azure.common.credentials import ServicePrincipalCredentials
 from azure.mgmt.compute import ComputeManagementClient
-from azure.mgmt.reservations import AzureReservationAPI
 
 
 _BASE_COLUMNS = ['subscription', 'location', 'resource_group', 'vm_size']
@@ -15,9 +14,9 @@ _ALL_COLUMNS = _BASE_COLUMNS + _COUNT_COLUMN
 def _extract_resource_group(vm_id):
     return vm_id.split('/')[4]
 
-class AzureVMCollector(object):
+class AzureAllocatedVMCollector(object):
     """
-    Class to export information about allocated and reserved Azure virtual machines 
+    Class to export information about allocated Azure virtual machines 
     in Prometheus compatible format.
     """
 
@@ -34,7 +33,7 @@ class AzureVMCollector(object):
                                                         secret=application_secret,
                                                         tenant=tenant_id)
 
-    def _create_gauges(self):
+    def _create_gauge(self):
         """
         Create a gauge instance.
 
@@ -70,13 +69,13 @@ class AzureVMCollector(object):
 
         :return: The metrics we are collecting.
         """
-        return [self._create_gauges()]
+        return [self._create_gauge()]
 
     def collect(self):
         """
         Yield the metrics.
         """
-        allocated_vms = self._create_gauges()
+        allocated_vms = self._create_gauge()
         self._collect_allocated_vms(allocated_vms)
 
         yield allocated_vms
