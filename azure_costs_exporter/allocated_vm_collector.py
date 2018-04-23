@@ -22,10 +22,19 @@ class AzureAllocatedVMCollector(object):
 
     def __init__(self, application_id, application_secret, tenant_id, subscription_ids, metric_name):
         """
-        Constructor.
+        Constructor. Access is granted to what Microsoft calls a service principal / Azure Active Directory
+        Application / app registration. Read more about this topic at
+        https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal.
+        This page will guide you how to obtain an application_id, and application_secret, and the tenant_id of
+        your Azure Active Directory. Please do not forget to grant "Reader" permissions to the app for all
+        subscriptions that you want to monitor.
         
+        :param application_id: The application ID that is created during the Azure app registration.
+        :param application_secret: The application secret that is created during the Azure app registration.
+        :param tenant_id: The ID of your Azure Active Directory instance
+        :param subscription_ids: A _sequence_ of subscription IDs that shall be monitored. The application_id
+                                 required "Reader" permissions on each subscription.
         :param metric_name: Name of the timeseries
-        :param timeout: Timeout to use for the request against the EA portal
         """
         self._metric_name = metric_name
         self._subscription_ids = subscription_ids
