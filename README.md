@@ -24,12 +24,12 @@ You need to create an `application.cfg` file with the following content:
 
     ENROLLMENT_NUMBER="123456"
     BILLING_API_ACCESS_KEY="XXX"
-    PROMETHEUS_METRIC_NAME="my_metric_name"
+    BILLING_METRIC_NAME="my_metric_name"
 
 - `ENROLLMENT_NUMBER` is the unique ID that identifies a particular EA.
 - The `BILLING_API_ACCESS_KEY` can be created in the [EA portal](https://ea.azure.com/) to gain
 access to the billing API. Navigate to "Reports > Download Usage" and generate an API Access Key.
-- `PROMETHEUS_METRIC_NAME` is the name of the time series that will be generated in Prometheus.
+- `BILLING_METRIC_NAME` is the name of the time series that will be generated in Prometheus.
 
 Deployment
 ----------
