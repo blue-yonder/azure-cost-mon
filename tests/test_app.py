@@ -75,24 +75,6 @@ def test_metrics(app, access_key, now, enrollment, timeout, expected):
 
 
 @responses.activate
-def test_metrics_no_usage(app, now, enrollment):
-
-
-    responses.add(
-        method='GET',
-        url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
-        match_querystring=True,
-        body=api_output_for_empty_months
-    )
-
-    rsp = app.test_client().get('/metrics')
-    assert rsp.status_code == 200
-
-    # expect only metric definition and help but no content in the output
-    assert rsp.data.count(b'azure_costs_eur') == 2
-
-
-@responses.activate
 @pytest.mark.parametrize('status', [500, 400])
 def test_failing_target(client, now, status):
     responses.add(

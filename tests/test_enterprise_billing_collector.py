@@ -85,7 +85,9 @@ def test_empty_month(api_url, enrollment):
     """
     If no usage details have are available for a given month the API does not return a JSON document.    
     """
+    registry = CollectorRegistry()
     c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz', 11)
+    registry.register(c)
 
     responses.add(
         method='GET',
@@ -94,5 +96,6 @@ def test_empty_month(api_url, enrollment):
         body=api_output_for_empty_months
     )
 
-    data = c._get_azure_data(current_month())
-    assert data == dict()
+    result = generate_latest(registry).decode('utf8')
+    # expect only metric definition and help but no content in the output
+    assert result.count(b'cloud_costs') == 2
