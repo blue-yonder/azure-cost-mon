@@ -106,6 +106,26 @@ def test_allocated_vm_metrics():
     assert rsp.data.count(b'AZURE_ALLOCATED_VMS') >= 3
 
 
+@responses.activate
+def test_reserved_vm_metrics():
+    responses.add(method='POST',
+                  url='https://login.microsoftonline.com/tenant_id/oauth2/token',
+                  json={"token_type": "Bearer",
+                        "expires_in": "3600",
+                        "ext_expires_in": "0",
+                        "expires_on": "1861920000",
+                        "not_before": "1861920000",
+                        "resource": "https://management.core.windows.net/",
+                        "access_token": "XXXXXX"})
+    responses.add(method='GET',
+                  url='https://management.azure.com/providers/Microsoft.Capacity/reservationOrders?api-version=2017-11-01',
+                  match_querystring=True,
+                  json={'value': []})  # no reservations sufficient for this test
+
+    rsp = get_client('only_reserved_vm').get('/metrics')
+    assert rsp.status_code == 200
+    assert rsp.data.count(b'AZURE_RESERVED_VMS') >= 4
+
 
 def test_health():
     rsp = get_client('only_ea_billing').get('/health')

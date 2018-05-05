@@ -3,6 +3,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, generate_l
 
 from .enterprise_billing_collector import AzureEABillingCollector
 from .allocated_vm_collector import AzureAllocatedVMCollector
+from .reserved_vm_collector import AzureReservedVMCollector
 
 
 bp = Blueprint('views', __name__)
@@ -38,11 +39,23 @@ def _register_allocated_vm_collector(registry):
     registry.register(collector)
 
 
+def _register_reserved_vm_collector(registry):
+    collector = AzureReservedVMCollector(
+        current_app.config['APPLICATION_ID'],
+        current_app.config['APPLICATION_SECRET'],
+        current_app.config['AD_TENANT_ID'],
+        current_app.config['RESERVED_VM_METRIC_NAME'],
+    )
+    registry.register(collector)
+
+
 def _register_collectors(registry):
     if 'BILLING_METRIC_NAME' in current_app.config:
         _register_billing_collector(registry)
     if 'ALLOCATED_VM_METRIC_NAME' in current_app.config:
         _register_allocated_vm_collector(registry)
+    if 'RESERVED_VM_METRIC_NAME' in current_app.config:
+        _register_reserved_vm_collector(registry)
 
 
 @bp.route("/health")
