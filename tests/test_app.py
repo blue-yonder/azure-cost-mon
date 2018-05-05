@@ -22,7 +22,8 @@ def access_key():
 
 @pytest.fixture
 def app():
-    return create_app()
+    import os
+    return create_app(os.path.join(os.getcwd(), "application.cfg"))
 
 
 @pytest.fixture
@@ -51,7 +52,7 @@ def test_configured_token_passed_to_billing_collector(client, now, enrollment, a
 
 
 @pytest.mark.parametrize('timeout,expected', [('42.3', 42.3), (None, DEFAULT_SCRAPE_TIMEOUT)])
-def test_metrics(app, access_key, now, enrollment, timeout, expected):
+def test_ea_billing_metrics(app, access_key, now, enrollment, timeout, expected):
     class RequestsMock(responses.RequestsMock):
         def get(self, *args, **kwargs):
             assert kwargs['timeout'] == expected
