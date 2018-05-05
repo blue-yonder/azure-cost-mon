@@ -2,6 +2,7 @@ from flask import Blueprint, Response, abort, current_app, request
 from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, generate_latest
 
 from .enterprise_billing_collector import AzureEABillingCollector
+from .allocated_vm_collector import AzureAllocatedVMCollector
 
 
 bp = Blueprint('views', __name__)
@@ -26,6 +27,24 @@ def _register_billing_collector(registry):
     registry.register(collector)
 
 
+def _register_allocated_vm_collector(registry):
+    collector = AzureAllocatedVMCollector(
+        current_app.config['APPLICATION_ID'],
+        current_app.config['APPLICATION_SECRET'],
+        current_app.config['AD_TENANT_ID'],
+        current_app.config['SUBSCRIPTION_IDS'],
+        current_app.config['ALLOCATED_VM_METRIC_NAME'],
+    )
+    registry.register(collector)
+
+
+def _register_collectors(registry):
+    if 'BILLING_METRIC_NAME' in current_app.config:
+        _register_billing_collector(registry)
+    if 'ALLOCATED_VM_METRIC_NAME' in current_app.config:
+        _register_allocated_vm_collector(registry)
+
+
 @bp.route("/health")
 def health():
     return 'ok'
@@ -34,7 +53,7 @@ def health():
 @bp.route("/metrics")
 def metrics():
     registry = CollectorRegistry()
-    _register_billing_collector(registry)
+    _register_collectors(registry)
 
     try:
         content = generate_latest(registry)

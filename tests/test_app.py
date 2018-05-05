@@ -66,8 +66,6 @@ def test_ea_billing_metrics(access_key, now, enrollment, timeout, expected):
             headers = {'X-Prometheus-Scrape-Timeout-Seconds': timeout}
 
         rsp = get_client('only_ea_billing').get('/metrics', headers=headers)
-        url = 'https://ea.azure.com/rest/{enrollment}/usage-report?month={month}&type=detail&fmt=Json'
-        url = url.format(enrollment=enrollment, month=now)
         assert rsp.status_code == 200
         assert rsp.data.count(b'azure_costs_eur') == 4
 
@@ -79,6 +77,34 @@ def test_failing_target():
 
         assert rsp.status_code == 502
         assert rsp.data.startswith(b'Scrape failed')
+
+
+@responses.activate
+def test_allocated_vm_metrics():
+    responses.add(method='POST',
+                  url='https://login.microsoftonline.com/tenant_id/oauth2/token',
+                  json={"token_type": "Bearer",
+                        "expires_in": "3600",
+                        "ext_expires_in": "0",
+                        "expires_on": "1861920000",
+                        "not_before": "1861920000",
+                        "resource": "https://management.core.windows.net/",
+                        "access_token": "XXXXXX"})
+    responses.add(method='GET',
+                  url='https://management.azure.com/subscriptions/SUBSCRIPTION_ID/providers/Microsoft.Compute/virtualMachines?api-version=2017-03-30',
+                  match_querystring=True,
+                  json={'value': [
+                      {
+                          'id': '/subscriptions/SUBSCRIPTION_ID/resourceGroups/RESOURCE_GROUP/providers/Microsoft.Compute/virtualMachines/NAME',
+                          'location': 'WESTEUROPE',
+                          'properties': {'hardwareProfile': {'vmSize': 'SIZE'}}
+                      }
+                  ]})
+
+    rsp = get_client('only_allocated_vm').get('/metrics')
+    assert rsp.status_code == 200
+    assert rsp.data.count(b'AZURE_ALLOCATED_VMS') >= 3
+
 
 
 def test_health():
