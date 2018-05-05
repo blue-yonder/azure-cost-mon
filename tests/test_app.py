@@ -2,6 +2,8 @@ import datetime
 
 import pytest
 import responses
+import requests
+import mock
 
 from azure_costs_exporter.main import create_app
 from azure_costs_exporter.views import DEFAULT_SCRAPE_TIMEOUT
@@ -35,7 +37,7 @@ def now():
 
 
 @responses.activate
-def test_token(client, now, enrollment, access_key):
+def test_configured_token_passed_to_billing_collector(client, now, enrollment, access_key):
 
     responses.add(
         method='GET',
@@ -74,20 +76,13 @@ def test_metrics(app, access_key, now, enrollment, timeout, expected):
         assert rsp.data.count(b'azure_costs_eur') == 4
 
 
-@responses.activate
-@pytest.mark.parametrize('status', [500, 400])
-def test_failing_target(client, now, status):
-    responses.add(
-        method='GET',
-        url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
-        match_querystring=True,
-        status=status
-    )
+def test_failing_target(client):
+    with mock.patch("azure_costs_exporter.enterprise_billing_collector.AzureEABillingCollector.collect",
+                    side_effect=requests.HTTPError()):
+        rsp = client.get('/metrics')
 
-    rsp = client.get('/metrics')
-
-    assert rsp.status_code == 502
-    assert rsp.data.startswith(b'Scrape failed')
+        assert rsp.status_code == 502
+        assert rsp.data.startswith(b'Scrape failed')
 
 
 def test_health(client):
