@@ -1,4 +1,5 @@
 import datetime
+import os
 
 import pytest
 import responses
@@ -20,15 +21,9 @@ def access_key():
     return '3408795poitwiqeotu934t5pqweiut'
 
 
-@pytest.fixture
-def app():
-    import os
-    return create_app(os.path.join(os.getcwd(), "application.cfg"))
-
-
-@pytest.fixture
-def client():
-    application = app()
+def get_client(configuration_name):
+    path = os.path.join(os.getcwd(), 'tests', 'configuration_files', '{}.cfg'.format(configuration_name))
+    application = create_app(path)
     return application.test_client()
 
 
@@ -38,8 +33,8 @@ def now():
 
 
 @responses.activate
-def test_configured_token_passed_to_billing_collector(client, now, enrollment, access_key):
-
+def test_configured_token_passed_to_billing_collector(now, enrollment, access_key):
+    client = get_client('only_ea_billing')
     responses.add(
         method='GET',
         url="https://ea.azure.com/rest/{0}/usage-report?month={1}&type=detail&fmt=Json".format(enrollment, now),
@@ -52,7 +47,7 @@ def test_configured_token_passed_to_billing_collector(client, now, enrollment, a
 
 
 @pytest.mark.parametrize('timeout,expected', [('42.3', 42.3), (None, DEFAULT_SCRAPE_TIMEOUT)])
-def test_ea_billing_metrics(app, access_key, now, enrollment, timeout, expected):
+def test_ea_billing_metrics(access_key, now, enrollment, timeout, expected):
     class RequestsMock(responses.RequestsMock):
         def get(self, *args, **kwargs):
             assert kwargs['timeout'] == expected
@@ -70,22 +65,22 @@ def test_ea_billing_metrics(app, access_key, now, enrollment, timeout, expected)
         if timeout is not None:
             headers = {'X-Prometheus-Scrape-Timeout-Seconds': timeout}
 
-        rsp = app.test_client().get('/metrics', headers=headers)
+        rsp = get_client('only_ea_billing').get('/metrics', headers=headers)
         url = 'https://ea.azure.com/rest/{enrollment}/usage-report?month={month}&type=detail&fmt=Json'
         url = url.format(enrollment=enrollment, month=now)
         assert rsp.status_code == 200
         assert rsp.data.count(b'azure_costs_eur') == 4
 
 
-def test_failing_target(client):
+def test_failing_target():
     with mock.patch("azure_costs_exporter.enterprise_billing_collector.AzureEABillingCollector.collect",
                     side_effect=requests.HTTPError()):
-        rsp = client.get('/metrics')
+        rsp = get_client('only_ea_billing').get('/metrics')
 
         assert rsp.status_code == 502
         assert rsp.data.startswith(b'Scrape failed')
 
 
-def test_health(client):
-    rsp = client.get('/health')
+def test_health():
+    rsp = get_client('only_ea_billing').get('/health')
     assert rsp.data == b'ok'
