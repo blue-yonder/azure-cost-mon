@@ -98,7 +98,7 @@ def test_empty_month(api_url, enrollment):
 
     result = generate_latest(registry).decode('utf8')
     # expect only metric definition and help but no content in the output
-    assert result.count(b'cloud_costs') == 2
+    assert result.count('cloud_costs') == 2
 
 
 @responses.activate
