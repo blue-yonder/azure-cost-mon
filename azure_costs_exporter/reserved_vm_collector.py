@@ -73,7 +73,7 @@ class AzureReservedVMCollector(object):
                     rows.append([_extract_subscription_id(r.properties),
                                  r.location,
                                  r.sku.name,
-                                 "{}-year".format((r.properties.expiry_date - r.properties.effective_date_time.date()).days / 365),
+                                 "{}-year".format(int((r.properties.expiry_date - r.properties.effective_date_time.date()).days / 365)),
                                  r.properties.quantity,
                                  (r.properties.expiry_date - _EPOCH).total_seconds()])
         df = DataFrame(data=rows, columns=_BASE_COLUMNS + _COUNT_COLUMN + _EXPIRES_COLUMNS)
