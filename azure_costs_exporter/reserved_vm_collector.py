@@ -66,7 +66,7 @@ class AzureReservedVMCollector(object):
 
         for order in reservations.reservation_order.list():
             for r in reservations.reservation.list(order.name):
-                if r.properties.provisioning_state == "Succeeded":
+                if r.properties.provisioning_state.upper() == "SUCCEEDED":
                     rows.append([
                         _extract_subscription_id(r.properties),
                         r.location,
