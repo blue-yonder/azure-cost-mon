@@ -31,9 +31,9 @@ Enterprise billing metrics
 
 Add the following variables to the `application.cfg` file:
 
-    ENROLLMENT_NUMBER="123456"
-    BILLING_API_ACCESS_KEY="XXX"
-    BILLING_METRIC_NAME="my_metric_name"
+    ENROLLMENT_NUMBER='123456'
+    BILLING_API_ACCESS_KEY='very_secret_key'
+    BILLING_METRIC_NAME='azure_costs'
 
 - `ENROLLMENT_NUMBER` is the unique ID that identifies a particular EA.
 - The `BILLING_API_ACCESS_KEY` can be created in the [EA portal](https://ea.azure.com/) to gain
@@ -66,8 +66,8 @@ Allocated virtual machine metrics
 
 In addition to the Microsoft AD application settings, add the following variables to the `application.cfg` file:
 
-    SUBSCRIPTION_IDS=['abcd', 'efgh']
-    ALLOCATED_VM_METRIC_NAME='my_metric_name'
+    SUBSCRIPTION_IDS=['subscription_1', 'subscription_2']
+    ALLOCATED_VM_METRIC_NAME='azure_allocated_vms'
 
 - `SUBSCRIPTION_IDS` is a _sequence_ (!) of subscription IDs that shall be monitored.
 - `ALLOCATED_VM_METRIC_NAME` is the name of the time series that will be generated for Prometheus
@@ -81,7 +81,7 @@ Reserved virtual machine metrics
 
 In addition to the Microsoft AD application settings, add the following variables to the `application.cfg` file:
 
-    RESERVED_VM_METRIC_NAME='my_metric_name'
+    RESERVED_VM_METRIC_NAME='azure_reserved_vms'
 
 - `RESERVED_VM_METRIC_NAME` is the name of the time series that will be generated for Prometheus
 
