@@ -105,7 +105,7 @@ class AzureEABillingCollector(object):
         df = convert_json_df(usage_data)
         groups = df.groupby(base_columns).sum()
 
-        for name, value in groups.iterrows():
-            c.add_metric(name, int(round(value.ExtendedCost)))
+        for labels, value in groups.iterrows():
+            c.add_metric(labels, int(round(value.ExtendedCost)))
 
         yield c

@@ -1,9 +1,9 @@
-import pytest, responses
+import pytest, responses, requests
 import datetime
 from prometheus_client import generate_latest, CollectorRegistry
 
-from azure_costs_exporter.prometheus_collector import convert_json_df, AzureEABillingCollector
-from azure_costs_exporter.prometheus_collector import base_columns, cost_column
+from azure_costs_exporter.enterprise_billing_collector import convert_json_df, AzureEABillingCollector
+from azure_costs_exporter.enterprise_billing_collector import base_columns, cost_column
 
 from .data import sample_data, api_output_for_empty_months
 
@@ -85,7 +85,9 @@ def test_empty_month(api_url, enrollment):
     """
     If no usage details have are available for a given month the API does not return a JSON document.    
     """
+    registry = CollectorRegistry()
     c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz', 11)
+    registry.register(c)
 
     responses.add(
         method='GET',
@@ -94,5 +96,24 @@ def test_empty_month(api_url, enrollment):
         body=api_output_for_empty_months
     )
 
-    data = c._get_azure_data(current_month())
-    assert data == dict()
+    result = generate_latest(registry).decode('utf8')
+    # expect only metric definition and help but no content in the output
+    assert result.count('cloud_costs') == 2
+
+
+@responses.activate
+@pytest.mark.parametrize('status', [500, 400])
+def test_failing_requests(api_url, enrollment, status):
+    registry = CollectorRegistry()
+    c = AzureEABillingCollector('cloud_costs', enrollment, 'abc123xyz', 42.3)
+    registry.register(c)
+
+    responses.add(
+        method='GET',
+        url=api_url,
+        match_querystring=True,
+        status=status
+    )
+
+    with pytest.raises(requests.HTTPError):
+        generate_latest(registry)
