@@ -24,6 +24,8 @@ You need to create an `application.cfg` file. This file is essentially a Python 
 variables in regular Python syntax. The following variables need to be defined in order to record various
 metrics.
 
+If you do not want to monitor a given metric, just do not define the corresponding `XXX_METRIC_NAME` option.
+
 Enterprise billing metrics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -38,47 +40,49 @@ Add the following variables to the `application.cfg` file:
 access to the billing API. Navigate to "Reports > Download Usage" and generate an API Access Key.
 - `BILLING_METRIC_NAME` is the name of the time series that will be generated in Prometheus.
 
-Allocated virtual machine metrics
+
+Microsoft AD application settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Add the following variables to the `application.cfg` file:
+For monitoring of reserved or allocated virtual machines, you need to provide additional configuration
+options in the `application.cfg` file:
 
     APPLICATION_ID='abcd'
     APPLICATION_SECRET='secret'
     AD_TENANT_ID='efgh'
 
+The configuration variables contain details on the Microsoft service principal / Azure Active Directory
+application / app registration. The [Microsoft documentation](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
+explains what all this means, and how to obtain the values for above configuration options.
+
+- `APPLICATION_ID` is the application ID of a Microsoft service principal / Azure Active Directory
+  application / app registration.
+- `APPLICATION_SECRET` is the application secret that is created during the Azure app registration.
+- `AD_TENANT_ID` is the ID of your Azure Active Directory instance.
+
+
+Allocated virtual machine metrics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In addition to the Microsoft AD application settings, add the following variables to the `application.cfg` file:
+
     SUBSCRIPTION_IDS=['abcd', 'efgh']
     ALLOCATED_VM_METRIC_NAME='my_metric_name'
 
-- `APPLICATION_ID` is the application ID of a Microsoft service principal / Azure Active Directory
-  application / app registration. The [Microsoft documentation](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
-  explains how all this means and how to obtain one and the corresponding values for `APPLICATION_SECRET`
-  and `AD_TENANT_ID`.
-- `APPLICATION_SECRET` is the application secret that is created during the Azure app registration.
-- `AD_TENANT_ID` is the ID of your Azure Active Directory instance.
 - `SUBSCRIPTION_IDS` is a _sequence_ (!) of subscription IDs that shall be monitored.
 - `ALLOCATED_VM_METRIC_NAME` is the name of the time series that will be generated for Prometheus
 
 Please note that the application ID requires "Reader" permissions on each subscription that you want to
 monitor.
 
+
 Reserved virtual machine metrics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Add the following variables to the `application.cfg` file:
-
-    APPLICATION_ID='abcd'
-    APPLICATION_SECRET='secret'
-    AD_TENANT_ID='efgh'
+In addition to the Microsoft AD application settings, add the following variables to the `application.cfg` file:
 
     RESERVED_VM_METRIC_NAME='my_metric_name'
 
-- `APPLICATION_ID` is the application ID of a Microsoft service principal / Azure Active Directory
-  application / app registration. The [Microsoft documentation](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
-  explains how all this means and how to obtain one and the corresponding values for `APPLICATION_SECRET`
-  and `AD_TENANT_ID`.
-- `APPLICATION_SECRET` is the application secret that is created during the Azure app registration.
-- `AD_TENANT_ID` is the ID of your Azure Active Directory instance.
 - `RESERVED_VM_METRIC_NAME` is the name of the time series that will be generated for Prometheus
 
 Please note that the application requires "Reader" permissions on _each individual_ reservation _order_ to be
