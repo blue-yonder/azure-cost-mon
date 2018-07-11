@@ -38,16 +38,12 @@ class AzureAllocatedVMCollector(object):
         """
         self._metric_name = metric_name
         self._subscription_ids = subscription_ids
-        self._credentials = ServicePrincipalCredentials(client_id=application_id,
-                                                        secret=application_secret,
-                                                        tenant=tenant_id)
+        self._credentials = ServicePrincipalCredentials(
+            client_id=application_id,
+            secret=application_secret,
+            tenant=tenant_id)
 
     def _create_gauge(self):
-        """
-        Create a gauge instance.
-
-        :return: prometheus_client gauge instance
-        """
         description = "Number of virtual machines per Azure subscription, location, resource group, and vm size"
         allocated_vms = GaugeMetricFamily(self._metric_name, description, labels=_BASE_COLUMNS)
         return allocated_vms
@@ -58,11 +54,12 @@ class AzureAllocatedVMCollector(object):
         for subscription_id in self._subscription_ids:
             compute_client = ComputeManagementClient(self._credentials, subscription_id)
             for vm in compute_client.virtual_machines.list_all():
-                rows.append([subscription_id,
-                             vm.location,
-                             _extract_resource_group(vm.id),
-                             vm.hardware_profile.vm_size,
-                             1])
+                rows.append([
+                    subscription_id,
+                    vm.location,
+                    _extract_resource_group(vm.id),
+                    vm.hardware_profile.vm_size,
+                    1])
 
         df = DataFrame(data=rows, columns=_ALL_COLUMNS)
 

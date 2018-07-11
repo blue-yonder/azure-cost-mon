@@ -71,8 +71,9 @@ def test_ea_billing_metrics(access_key, now, enrollment, timeout, expected):
 
 
 def test_failing_target():
-    with mock.patch("azure_costs_exporter.enterprise_billing_collector.AzureEABillingCollector.collect",
-                    side_effect=requests.HTTPError()):
+    with mock.patch(
+            "azure_costs_exporter.enterprise_billing_collector.AzureEABillingCollector.collect",
+            side_effect=requests.HTTPError()):
         rsp = get_client('only_ea_billing').get('/metrics')
 
         assert rsp.status_code == 502
@@ -81,25 +82,27 @@ def test_failing_target():
 
 @responses.activate
 def test_allocated_vm_metrics():
-    responses.add(method='POST',
-                  url='https://login.microsoftonline.com/tenant_id/oauth2/token',
-                  json={"token_type": "Bearer",
-                        "expires_in": "3600",
-                        "ext_expires_in": "0",
-                        "expires_on": "1861920000",
-                        "not_before": "1861920000",
-                        "resource": "https://management.core.windows.net/",
-                        "access_token": "XXXXXX"})
-    responses.add(method='GET',
-                  url='https://management.azure.com/subscriptions/SUBSCRIPTION_ID/providers/Microsoft.Compute/virtualMachines?api-version=2017-03-30',
-                  match_querystring=True,
-                  json={'value': [
-                      {
-                          'id': '/subscriptions/SUBSCRIPTION_ID/resourceGroups/RESOURCE_GROUP/providers/Microsoft.Compute/virtualMachines/NAME',
-                          'location': 'WESTEUROPE',
-                          'properties': {'hardwareProfile': {'vmSize': 'SIZE'}}
-                      }
-                  ]})
+    responses.add(
+        method='POST',
+        url='https://login.microsoftonline.com/tenant_id/oauth2/token',
+        json={"token_type": "Bearer",
+              "expires_in": "3600",
+              "ext_expires_in": "0",
+              "expires_on": "1861920000",
+              "not_before": "1861920000",
+              "resource": "https://management.core.windows.net/",
+              "access_token": "XXXXXX"})
+    responses.add(
+        method='GET',
+        url='https://management.azure.com/subscriptions/SUBSCRIPTION_ID/providers/Microsoft.Compute/virtualMachines?api-version=2017-03-30',
+        match_querystring=True,
+        json={'value': [
+            {
+                'id': '/subscriptions/SUBSCRIPTION_ID/resourceGroups/RESOURCE_GROUP/providers/Microsoft.Compute/virtualMachines/NAME',
+                'location': 'WESTEUROPE',
+                'properties': {'hardwareProfile': {'vmSize': 'SIZE'}}
+            }
+        ]})
 
     rsp = get_client('only_allocated_vm').get('/metrics')
     assert rsp.status_code == 200
@@ -108,19 +111,22 @@ def test_allocated_vm_metrics():
 
 @responses.activate
 def test_reserved_vm_metrics():
-    responses.add(method='POST',
-                  url='https://login.microsoftonline.com/tenant_id/oauth2/token',
-                  json={"token_type": "Bearer",
-                        "expires_in": "3600",
-                        "ext_expires_in": "0",
-                        "expires_on": "1861920000",
-                        "not_before": "1861920000",
-                        "resource": "https://management.core.windows.net/",
-                        "access_token": "XXXXXX"})
-    responses.add(method='GET',
-                  url='https://management.azure.com/providers/Microsoft.Capacity/reservationOrders?api-version=2017-11-01',
-                  match_querystring=True,
-                  json={'value': []})  # no reservations sufficient for this test
+    responses.add(
+        method='POST',
+        url='https://login.microsoftonline.com/tenant_id/oauth2/token',
+        json={
+            "token_type": "Bearer",
+            "expires_in": "3600",
+            "ext_expires_in": "0",
+            "expires_on": "1861920000",
+            "not_before": "1861920000",
+            "resource": "https://management.core.windows.net/",
+            "access_token": "XXXXXX"})
+    responses.add(
+        method='GET',
+        url='https://management.azure.com/providers/Microsoft.Capacity/reservationOrders?api-version=2017-11-01',
+        match_querystring=True,
+        json={'value': []})  # no reservations sufficient for this test
 
     rsp = get_client('only_reserved_vm').get('/metrics')
     assert rsp.status_code == 200

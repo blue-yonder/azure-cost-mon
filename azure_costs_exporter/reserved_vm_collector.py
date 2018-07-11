@@ -49,17 +49,14 @@ class AzureReservedVMCollector(object):
                                                         tenant=tenant_id)
 
     def _create_gauges(self):
-        """
-        Create gauge instances.
-
-        :return: prometheus_client gauge instance
-        """
-        reserved_vms = GaugeMetricFamily(self._metric_name,
-                                         "Number of reserved virtual machines per Azure subscription, location, duration, and vm size",
-                                         labels=_BASE_COLUMNS)
-        expirations = GaugeMetricFamily(self._metric_name + "_next_expiration",
-                                         "Timestamp of the next expiration of a virtual machine reservation of certain location, size, duration, and subscription",
-                                         labels=_BASE_COLUMNS)
+        reserved_vms = GaugeMetricFamily(
+            self._metric_name,
+            "Number of reserved virtual machines per Azure subscription, location, duration, and vm size",
+            labels=_BASE_COLUMNS)
+        expirations = GaugeMetricFamily(
+            self._metric_name + "_next_expiration",
+            "Timestamp of the next expiration of a virtual machine reservation of certain location, size, duration, and subscription",
+            labels=_BASE_COLUMNS)
         return reserved_vms, expirations
 
     def _collect_reserved_vms(self, reserved_vms, expirations):
@@ -70,12 +67,13 @@ class AzureReservedVMCollector(object):
         for order in reservations.reservation_order.list():
             for r in reservations.reservation.list(order.name):
                 if r.properties.provisioning_state == "Succeeded":
-                    rows.append([_extract_subscription_id(r.properties),
-                                 r.location,
-                                 r.sku.name,
-                                 "{}-year".format(int((r.properties.expiry_date - r.properties.effective_date_time.date()).days / 365)),
-                                 r.properties.quantity,
-                                 (r.properties.expiry_date - _EPOCH).total_seconds()])
+                    rows.append([
+                        _extract_subscription_id(r.properties),
+                        r.location,
+                        r.sku.name,
+                        "{}-year".format(int((r.properties.expiry_date - r.properties.effective_date_time.date()).days / 365)),
+                        r.properties.quantity,
+                        (r.properties.expiry_date - _EPOCH).total_seconds()])
         df = DataFrame(data=rows, columns=_BASE_COLUMNS + _COUNT_COLUMN + _EXPIRES_COLUMNS)
 
         groups = df.groupby(_BASE_COLUMNS).sum()
