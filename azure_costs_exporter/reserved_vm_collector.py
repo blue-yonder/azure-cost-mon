@@ -77,12 +77,12 @@ class AzureReservedVMCollector(object):
         df = DataFrame(data=rows, columns=_BASE_COLUMNS + _COUNT_COLUMN + _EXPIRES_COLUMNS)
 
         groups = df.groupby(_BASE_COLUMNS).sum()
-        for name, value in groups.iterrows():
-            reserved_vms.add_metric(name, int(value.total))
+        for labels, value in groups.iterrows():
+            reserved_vms.add_metric(labels, int(value.total))
 
         groups = df.groupby(_BASE_COLUMNS).min()
-        for name, value in groups.iterrows():
-            expirations.add_metric(name, int(value.next_expiration))
+        for labels, value in groups.iterrows():
+            expirations.add_metric(labels, int(value.next_expiration))
 
 
     def describe(self):

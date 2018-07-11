@@ -65,8 +65,8 @@ class AzureAllocatedVMCollector(object):
 
         groups = df.groupby(_BASE_COLUMNS).sum()
 
-        for name, value in groups.iterrows():
-            allocated_vms.add_metric(name, int(value.total))
+        for labels, value in groups.iterrows():
+            allocated_vms.add_metric(labels, int(value.total))
 
     def describe(self):
         """
