@@ -4,7 +4,7 @@ Change Log
 All notable changes to this project are noted in this file. This project adheres to [Semantic
 Versioning](http://semver.org/).
 
-1.0.0 (unreleased)
+1.0.0
 ------------------
 
 - Added support for additional metrics: allocated virtual machines and reserved virtual machine
