@@ -12,9 +12,9 @@ DEFAULT_SCRAPE_TIMEOUT = 10
 
 def _get_timeout():
     try:
-        return float(request.headers.get('X-Prometheus-Scrape-Timeout-Seconds'))
+        return float(request.headers.get('X-Prometheus-Scrape-Timeout-Seconds')) 
     except Exception:
-        return DEFAULT_SCRAPE_TIMEOUT
+        return current_app.config.get('BILLING_SCRAPE_TIMEOUT', DEFAULT_SCRAPE_TIMEOUT)
 
 
 def _register_billing_collector(registry):
