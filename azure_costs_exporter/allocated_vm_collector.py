@@ -52,7 +52,7 @@ class AzureAllocatedVMCollector(object):
         rows = []
 
         for subscription_id in self._subscription_ids:
-            compute_client = ComputeManagementClient(self._credentials, subscription_id)
+            compute_client = ComputeManagementClient(self._credentials, str(subscription_id))
             for vm in compute_client.virtual_machines.list_all():
                 rows.append([
                     subscription_id,
