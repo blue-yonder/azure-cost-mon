@@ -4,7 +4,7 @@ Change Log
 All notable changes to this project are noted in this file. This project adheres to [Semantic
 Versioning](http://semver.org/).
 
-1.1.1
+1.1.0
 -----
 
 - Added BILLING_SCRAPE_TIMEOUT to be able to set a different value then the default of 10 seconds
