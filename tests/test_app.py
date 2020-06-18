@@ -13,12 +13,12 @@ from .data import sample_data, api_output_for_empty_months
 
 @pytest.fixture
 def enrollment():
-    return '31415'
+    return 'SECRET_ENROLLMENT'
 
 
 @pytest.fixture
 def access_key():
-    return '3408795poitwiqeotu934t5pqweiut'
+    return 'SECRET_KEY'
 
 
 def get_client(configuration_name):
