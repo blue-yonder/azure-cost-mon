@@ -4,40 +4,110 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-
-adal==0.5.1               # via msrestazure
-asn1crypto==0.24.0        # via cryptography
-azure-common==1.1.8       # via azure-mgmt-compute, azure-mgmt-reservations
+-e file:///home/dependabot/dependabot-updater/tmp/dependabot_20210202-72-1qta7im
+    # via -r requirements.in
+adal==0.5.1
+    # via msrestazure
+asn1crypto==0.24.0
+    # via cryptography
+azure-common==1.1.8
+    # via
+    #   azure-mgmt-compute
+    #   azure-mgmt-reservations
 azure-mgmt-compute==3.0.1
-azure-mgmt-nspkg==2.0.0   # via azure-mgmt-compute, azure-mgmt-reservations
+    # via sanitized-package
+azure-mgmt-nspkg==2.0.0
+    # via
+    #   azure-mgmt-compute
+    #   azure-mgmt-reservations
 azure-mgmt-reservations==0.1.0
-azure-nspkg==2.0.0        # via azure-common, azure-mgmt-nspkg
-certifi==2018.1.18        # via msrest
-cffi==1.11.5              # via cryptography
-click==6.7                # via flask
-configparser==3.5.0       # via entrypoints
-cryptography==2.2.2       # via adal
-entrypoints==0.2.3        # via keyring
-enum34==1.1.6             # via cryptography, msrest
+    # via sanitized-package
+azure-nspkg==2.0.0
+    # via
+    #   azure-common
+    #   azure-mgmt-nspkg
+certifi==2018.1.18
+    # via
+    #   msrest
+    #   requests
+cffi==1.11.5
+    # via cryptography
+chardet==3.0.4
+    # via requests
+click==6.7
+    # via flask
+configparser==3.5.0
+    # via entrypoints
+cryptography==2.2.2
+    # via
+    #   adal
+    #   secretstorage
+entrypoints==0.2.3
+    # via keyring
+enum34==1.1.6
+    # via
+    #   cryptography
+    #   msrest
 flask==0.12.2
-idna==2.6                 # via cryptography
-ipaddress==1.0.19         # via cryptography
-isodate==0.6.0            # via msrest
-itsdangerous==0.24        # via flask
-jinja2==2.11.3             # via flask
-keyring==12.0.0           # via msrestazure
-markupsafe==1.0           # via jinja2
-msrest==0.4.27            # via msrestazure
-msrestazure==0.4.25       # via azure-mgmt-compute, azure-mgmt-reservations
-numpy==1.12.1             # via pandas
-oauthlib==2.0.7           # via requests-oauthlib
+    # via sanitized-package
+idna==2.6
+    # via
+    #   cryptography
+    #   requests
+ipaddress==1.0.19
+    # via cryptography
+isodate==0.6.0
+    # via msrest
+itsdangerous==0.24
+    # via flask
+jinja2==2.11.3
+    # via flask
+keyring==12.0.0
+    # via msrestazure
+markupsafe==1.0
+    # via jinja2
+msrest==0.4.27
+    # via msrestazure
+msrestazure==0.4.25
+    # via
+    #   azure-mgmt-compute
+    #   azure-mgmt-reservations
+numpy==1.12.1
+    # via
+    #   pandas
+    #   sanitized-package
+oauthlib==2.0.7
+    # via requests-oauthlib
 pandas==0.20.1
+    # via sanitized-package
 prometheus-client==0.0.19
-pycparser==2.18           # via cffi
-pyjwt==1.6.1              # via adal
-python-dateutil==2.6.0    # via adal, pandas
-pytz==2017.2              # via pandas
-requests-oauthlib==0.8.0  # via msrest
-requests==2.14.2          # via adal, msrest, requests-oauthlib
-six==1.10.0               # via cryptography, isodate, python-dateutil
-werkzeug==0.12.2          # via flask
+    # via sanitized-package
+pycparser==2.18
+    # via cffi
+pyjwt==1.6.1
+    # via adal
+python-dateutil==2.6.0
+    # via
+    #   adal
+    #   pandas
+pytz==2017.2
+    # via pandas
+requests-oauthlib==0.8.0
+    # via msrest
+requests==2.20.0
+    # via
+    #   adal
+    #   msrest
+    #   requests-oauthlib
+    #   sanitized-package
+secretstorage==2.3.1
+    # via keyring
+six==1.10.0
+    # via
+    #   cryptography
+    #   isodate
+    #   python-dateutil
+urllib3==1.24.3
+    # via requests
+werkzeug==0.12.2
+    # via flask
