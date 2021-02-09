@@ -16,7 +16,7 @@ certifi==2018.1.18        # via msrest
 cffi==1.11.5              # via cryptography
 click==6.7                # via flask
 configparser==3.5.0       # via entrypoints
-cryptography==2.2.2       # via adal
+cryptography==3.3.2       # via adal
 entrypoints==0.2.3        # via keyring
 enum34==1.1.6             # via cryptography, msrest
 flask==0.12.2
