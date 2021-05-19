@@ -2,8 +2,11 @@
 [![Coverage Status](https://coveralls.io/repos/github/blue-yonder/azure-cost-mon/badge.svg?branch=master)](https://coveralls.io/github/blue-yonder/azure-cost-mon?branch=master)
 [![PyPI version](https://badge.fury.io/py/azure-costs-exporter.svg)](https://badge.fury.io/py/azure-costs-exporter)
 
+
 ACE azure-costs-exporter
 ========================
+
+**UNMAINTAINED**: This repository is no longer maintained. It might no longer be compatible with the latest Azure APIs.
 
 Prometheus exporter for the Microsoft Azure billing API. Check out
 [this blog post](https://tech.blue-yonder.com/public-cloud-cost-control/) for
