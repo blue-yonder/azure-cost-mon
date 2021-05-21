@@ -16,7 +16,7 @@ certifi==2018.1.18        # via msrest
 cffi==1.11.5              # via cryptography
 click==6.7                # via flask
 configparser==3.5.0       # via entrypoints
-cryptography==2.2.2       # via adal
+cryptography==3.2       # via adal
 entrypoints==0.2.3        # via keyring
 enum34==1.1.6             # via cryptography, msrest
 flask==0.12.2
@@ -29,7 +29,7 @@ keyring==12.0.0           # via msrestazure
 markupsafe==1.0           # via jinja2
 msrest==0.4.27            # via msrestazure
 msrestazure==0.4.25       # via azure-mgmt-compute, azure-mgmt-reservations
-numpy==1.12.1             # via pandas
+numpy==1.13.3             # via pandas
 oauthlib==2.0.7           # via requests-oauthlib
 pandas==0.20.1
 prometheus-client==0.0.19
@@ -38,6 +38,6 @@ pyjwt==1.6.1              # via adal
 python-dateutil==2.6.0    # via adal, pandas
 pytz==2017.2              # via pandas
 requests-oauthlib==0.8.0  # via msrest
-requests==2.14.2          # via adal, msrest, requests-oauthlib
+requests==2.20          # via adal, msrest, requests-oauthlib
 six==1.10.0               # via cryptography, isodate, python-dateutil
-werkzeug==0.12.2          # via flask
+werkzeug==0.15.3          # via flask
